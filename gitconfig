@@ -1,0 +1,8 @@
+[user]
+	name = Ahmad Naufal Hakim
+	email = ahmadnaufalhakim@gmail.com
+[github]
+	user = ahmadnaufalhakim
+[core]
+	editor = nano
+	autocrlf = input
