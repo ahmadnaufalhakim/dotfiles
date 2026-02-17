@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
-set -e
 
-DOTFILES_DIR="${DOTFILES_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+# Prevent sourcing
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+    echo "Please run this script, do not source it."
+    return 1
+fi
+
+set -e
 
 BASHRC="$HOME/.bashrc"
 HOOK_START="# >>> dotfiles loader >>>"
+DOTFILES_DIR="${DOTFILES_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 
 if [ ! -f "$BASHRC" ] || ! grep -q "$HOOK_START" "$BASHRC"; then
     cat >> "$BASHRC" <<EOF
@@ -15,5 +21,5 @@ if [ ! -f "$BASHRC" ] || ! grep -q "$HOOK_START" "$BASHRC"; then
 EOF
     echo "Bash hook installed."
 else
-    echo "Bash hook already present"
+    echo "Bash hook already present."
 fi
