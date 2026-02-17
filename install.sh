@@ -6,7 +6,7 @@ DOTFILES_DIR="${DOTFILES_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 BASHRC="$HOME/.bashrc"
 HOOK_START="# >>> dotfiles loader >>>"
 
-if ! grep -q "$HOOK_START" "$BASHRC"; then
+if [ ! -f "$BASHRC" ] || ! grep -q "$HOOK_START" "$BASHRC"; then
     cat >> "$BASHRC" <<EOF
 
 # >>> dotfiles loader >>>
