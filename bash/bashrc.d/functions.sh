@@ -12,9 +12,9 @@ append_prompt_command() {
 [ -f "$DOTFILES_DIR/config/.env" ] && source "$DOTFILES_DIR/config/.env"
 
 set_goprivate() {
-    if [[ "$PWD" == "$HOME/coding/work/"* ]]; then
-        export GOPRIVATE="$GOPRIVATE_DOMAIN"
-    else
-        unset GOPRIVATE
-    fi
+    command -v go &>/dev/null || return
+
+    [[ "$PWD" == "$HOME/coding/work"* ]] \
+        && go env -w GOPRIVATE="$GOPRIVATE_DOMAIN" \
+        || go env -u GOPRIVATE
 }
