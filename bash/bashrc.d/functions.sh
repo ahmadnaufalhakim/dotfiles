@@ -14,7 +14,18 @@ append_prompt_command() {
 set_goprivate() {
     command -v go &>/dev/null || return
 
-    [[ "$PWD" == "$HOME/coding/work"* ]] \
-        && go env -w GOPRIVATE="$GOPRIVATE_DOMAIN" \
-        || go env -u GOPRIVATE
+    local in_work=0
+    [[ "$PWD" == "$HOME/coding/work"* ]] && in_work=1
+
+    # Only update GOPRIVATE when directory state changed
+    if [[ "$in_work" != "$__LAST_GOPRIVATE_STATE" ]]; then
+        if (( in_work )); then
+            go env -w GOPRIVATE="$GOPRIVATE_DOMAIN"
+        else
+            go env -u GOPRIVATE
+        fi
+
+        # Cache directory state
+        __LAST_GOPRIVATE_STATE=$in_work
+    fi
 }
