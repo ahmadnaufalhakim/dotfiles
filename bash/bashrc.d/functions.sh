@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# append_prompt_command appends a command to the current PROMPT_COMMAND
 append_prompt_command() {
     local cmd="$1"
     case ";$PROMPT_COMMAND" in
@@ -11,6 +12,7 @@ append_prompt_command() {
 # Load config
 [ -f "$DOTFILES_DIR/config/.env" ] && source "$DOTFILES_DIR/config/.env"
 
+# set_goprivate sets Go GOPRIVATE environment variable
 set_goprivate() {
     command -v go &>/dev/null || return
 
