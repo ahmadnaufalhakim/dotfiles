@@ -2,6 +2,12 @@
 
 # Reset
 RESET="\e[0m"
+# Bold text
+BOLD="\e[1m"
+# Blink
+BLINK="\e[5m"
+# Invert fg/bg
+INVERT="\e[7m"
 
 # Background colors
 BG_BLACK="\e[40m"
@@ -14,6 +20,7 @@ BG_CYAN="\e[46m"
 BG_WHITE="\e[47m"
 BG_PINK="\e[48;5;205m"
 BG_ORANGE="\e[48;5;166m"
+BG_DEFAULT="\e[49m"
 
 BG_BBLACK="\e[100m"
 BG_BRED="\e[101m"
@@ -35,6 +42,7 @@ FG_CYAN="\e[36m"
 FG_WHITE="\e[37m"
 FG_PINK="\e[38;5;205m"
 FG_ORANGE="\e[38;5;166m"
+FG_DEFAULT="\e[39m"
 
 FG_BBLACK="\e[90m"
 FG_BRED="\e[91m"
