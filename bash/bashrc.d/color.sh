@@ -49,6 +49,7 @@ FG_BMAGENTA="\e[95m"
 FG_BCYAN="\e[96m"
 FG_BWHITE="\e[97m"
 
+# keyword: ANSI escape codes
 # bzr in truecolor (24-bit)
 BG_KT="\e[48;2;235;0;0m"
 BG_RY="\e[48;2;52;120;240m"
