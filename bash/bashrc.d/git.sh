@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Aliases
+alias g="git"
+alias gb="git branch"
+alias gba="git branch -a"
+alias gbd="git branch -d"
+alias gbD="git branch -D"
+alias gco="git checkout"
+alias gcb="git checkout -b"
+alias gl="git log --graph --abbrev-commit --decorate --pretty=format:'%C(bold #eb0000)%h%C(reset) %C(auto)%d%C(reset) %C(#3478f0)%s'"
+alias gld="git log --graph --pretty='%C(bold #eb0000)%H%C(reset)%C(auto)%d%C(reset)%n    %C(#3478f0)%s%n%C(#f0c428)[%ar, %ad]%n%C(bold #ff5faf)%an〈%ae〉%C(reset)%n'"
+alias glds="git log --graph --pretty='%n%C(bold #eb0000)%H%C(reset)%C(auto)%d%C(reset)%n    %C(#3478f0)%s%n%C(#f0c428)[%ar, %ad]%n%C(bold #ff5faf)%an〈%ae〉%C(reset)' --stat"
+alias glo="git log --graph --pretty='%C(bold #eb0000)%h%C(reset)%C(auto)%d%C(reset) — %C(#3478f0)%s%C(#f0c428) [%ar, %ad]%C(bold #ff5faf) %an〈%ae〉%C(reset)'"
+alias glos="git log --graph --pretty='%n%C(bold #eb0000)%h%C(reset)%C(auto)%d%C(reset) — %C(#3478f0)%s%C(#f0c428) [%ar, %ad]%C(bold #ff5faf) %an〈%ae〉%C(reset)' --stat"
+alias gm="git merge"
+alias gpl="git pull origin"
+alias gpsh="git push origin"
+alias grb="git rebase"
+alias gst="git stash"
+alias gs="git status"
+alias gss="git status -s"
