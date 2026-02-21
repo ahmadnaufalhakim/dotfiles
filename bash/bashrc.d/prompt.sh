@@ -6,6 +6,15 @@ BRANCH_ICONS=("𖣂")
 RIGHT_SEPARATOR=$'\uE0B0'
 LEFT_SEPARATOR=$'\uE0B2'
 
+# append_prompt_command appends a command to the current PROMPT_COMMAND
+append_prompt_command() {
+    local cmd="$1"
+    case ";$PROMPT_COMMAND" in
+        *";$cmd;"*) ;; # already added
+        *) PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND;}$cmd"
+    esac
+}
+
 # git_branch prints current git branch
 git_branch() {
     # Check if inside a git directory

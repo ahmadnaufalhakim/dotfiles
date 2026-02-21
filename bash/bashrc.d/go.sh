@@ -11,3 +11,23 @@ case ":$PATH:" in
     *":$GOPATH/bin:"*) ;;
     *) export PATH="$GOPATH/bin:$PATH" ;;
 esac
+
+# set_goprivate sets Go GOPRIVATE environment variable
+set_goprivate() {
+    command -v go &>/dev/null || return
+
+    local in_work=0
+    [[ "$PWD" == "$HOME/coding/work"* ]] && in_work=1
+
+    # Only update GOPRIVATE when directory state changed
+    if [[ "$in_work" != "$__LAST_GOPRIVATE_STATE" ]]; then
+        if (( in_work )); then
+            go env -w GOPRIVATE="$GOPRIVATE_DOMAIN"
+        else
+            go env -u GOPRIVATE
+        fi
+
+        # Cache directory state
+        __LAST_GOPRIVATE_STATE=$in_work
+    fi
+}
