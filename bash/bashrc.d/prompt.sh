@@ -22,13 +22,13 @@ build_prompt() {
 
     # Status segment
     if [[ "$exit_code" -eq 0 ]]; then
-        PS1+="${INVERT}${FG_ORANGE}${RIGHT_SEPARATOR}${RESET}"
-        PS1+="${BOLD}${BG_ORANGE}${FG_BLACK} ✓ "
-        PS1+="${BG_BLUE}${FG_ORANGE}${RIGHT_SEPARATOR}"
-    else
         PS1+="${INVERT}${FG_RED}${RIGHT_SEPARATOR}${RESET}"
-        PS1+="${BOLD}${BG_RED}${FG_BLACK} ✗ "
+        PS1+="${BOLD}${BG_RED}${FG_BLACK} ✓ "
         PS1+="${BG_BLUE}${FG_RED}${RIGHT_SEPARATOR}"
+    else
+        PS1+="${INVERT}${BG_DEFAULT}${FG_WHITE}${RIGHT_SEPARATOR}${RESET}"
+        PS1+="${BOLD}${BG_WHITE}${FG_RED} ✗ "
+        PS1+="${BG_BLUE}${FG_DEFAULT}${RIGHT_SEPARATOR}"
     fi
 
     # User
