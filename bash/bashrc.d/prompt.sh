@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-BRANCH_ICONS=("𖣂" "𖦥" "⎇")
+# BRANCH_ICONS=("𖣂" "𖦥" "⎇")
+BRANCH_ICONS=("𖣂")
 
 RIGHT_SEPARATOR=$'\uE0B0'
 LEFT_SEPARATOR=$'\uE0B2'
