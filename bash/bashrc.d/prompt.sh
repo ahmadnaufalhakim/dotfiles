@@ -29,7 +29,7 @@ build_prompt() {
     else
         PS1+="${INVERT}${BG_DEFAULT}${FG_WHITE}${RIGHT_SEPARATOR}${RESET}"
         PS1+="${BOLD}${BG_WHITE}${FG_KT} ✗ "
-        PS1+="${BG_RY}${FG_WHITE}${RIGHT_SEPARATOR}"
+        PS1+="${BG_RY}${FG_DEFAULT}${RIGHT_SEPARATOR}"
     fi
 
     # User
