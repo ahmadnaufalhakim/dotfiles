@@ -3,6 +3,10 @@
 # Resolve dotfiles dir if not already set
 DOTFILES_DIR="${DOTFILES_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
+# Load config
+[ -f "$DOTFILES_DIR/config/.env" ] && source "$DOTFILES_DIR/config/.env"
+
+# Load custom bashrc modules
 BASH_MODULE_DIR="$DOTFILES_DIR/bash/bashrc.d"
 if [ -d "$BASH_MODULE_DIR" ]; then
     for file in "$BASH_MODULE_DIR"/*.sh; do

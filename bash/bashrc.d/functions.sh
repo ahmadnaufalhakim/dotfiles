@@ -9,9 +9,6 @@ append_prompt_command() {
     esac
 }
 
-# Load config
-[ -f "$DOTFILES_DIR/config/.env" ] && source "$DOTFILES_DIR/config/.env"
-
 # set_goprivate sets Go GOPRIVATE environment variable
 set_goprivate() {
     command -v go &>/dev/null || return
