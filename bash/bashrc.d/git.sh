@@ -53,7 +53,7 @@ for alias in "${!git_aliases[@]}"; do
         type __git_complete &>/dev/null || source /usr/share/bash-completion/completions/git;
 
         # Wire alias to completion
-        ___git_complete $alias ${git_aliases[$alias]}
+        __git_complete $alias ${git_aliases[$alias]}
     }
     "
 
