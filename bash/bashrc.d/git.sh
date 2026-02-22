@@ -45,11 +45,10 @@ declare -A git_aliases=(
 )
 
 # Dynamically calls bash autocompletion when on-demand
-# holy this is the big one folks
 for alias in "${!git_aliases[@]}"; do
     # Create wrapper functions dynamically
     eval "
-    _${alias}_lazy_load() {
+    function _${alias}_lazy_load() {
         # Lazy-load git completion if needed
         type __git_complete &>/dev/null || source /usr/share/bash-completion/completions/git;
 

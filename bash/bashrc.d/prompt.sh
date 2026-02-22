@@ -7,7 +7,7 @@ RIGHT_SEPARATOR=$'\uE0B0'
 LEFT_SEPARATOR=$'\uE0B2'
 
 # append_prompt_command appends a command to the current PROMPT_COMMAND
-append_prompt_command() {
+function append_prompt_command() {
     local cmd="$1"
     case ";$PROMPT_COMMAND" in
         *";$cmd;"*) ;; # already added
@@ -16,14 +16,14 @@ append_prompt_command() {
 }
 
 # git_branch prints current git branch
-git_branch() {
+function git_branch() {
     # Check if inside a git directory
     git rev-parse --is-inside-work-tree &>/dev/null || return
     git rev-parse --abbrev-ref HEAD 2>/dev/null
 }
 
 # build_prompt assembles the PS1
-build_prompt() {
+function build_prompt() {
     local exit_code=$?
     local branch="$(git_branch)"
     local branch_icon="${BRANCH_ICONS[RANDOM % ${#BRANCH_ICONS[@]}]}"

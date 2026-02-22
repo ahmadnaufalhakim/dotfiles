@@ -5,7 +5,7 @@ AGENT_FILE="$HOME/.ssh/.agent.env"
 
 # start_agent starts a new ss-agent, saves its
 # environment variables to a file for reuse
-start_agent() {
+function start_agent() {
     eval "$(ssh-agent -s)" >/dev/null
     {
         echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK"

@@ -13,7 +13,7 @@ case ":$PATH:" in
 esac
 
 # set_goprivate sets Go GOPRIVATE environment variable
-set_goprivate() {
+function set_goprivate() {
     command -v go &>/dev/null || return
 
     local in_work=0
