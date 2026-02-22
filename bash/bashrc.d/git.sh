@@ -44,13 +44,29 @@ declare -A git_aliases=(
     [gss]=_git_status
 )
 
+# load_git_completion loads git bash autocompletion script
+function load_git_completion() {
+    type __git_complete &>/dev/null && return
+
+    # Common Linux path
+    if [[ -f /usr/share/bash-completion/completions/git ]]; then
+        source /usr/share/bash-completion/completions/git
+        return
+    fi
+
+    # macOS / Homebrew fallback
+    local git_completion
+    git_completion="$(git --exec-path 2>/dev/null)/git-completion.bash"
+    [[ -f "$git_completion" ]] && source "$git_completion"
+}
+
 # Dynamically calls bash autocompletion when on-demand
 for alias in "${!git_aliases[@]}"; do
     # Create wrapper functions dynamically
     eval "
     function _${alias}_lazy_load() {
         # Lazy-load git completion if needed
-        type __git_complete &>/dev/null || source /usr/share/bash-completion/completions/git;
+        load_git_completion || return
 
         # Wire alias to completion
         __git_complete $alias ${git_aliases[$alias]}
