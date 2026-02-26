@@ -68,7 +68,7 @@ function build_prompt() {
     local right_pos=$(( cols - right_length - 3 ))
 
     PS1="${left_section}"
-    PS1+="\e[${right_pos}G"
+    PS1+="\[\e[${right_pos}G\]"
     PS1+="${right_section}"
     PS1+="${RESET}\n$ "
 }
