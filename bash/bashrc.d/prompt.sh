@@ -67,10 +67,7 @@ function build_prompt() {
     local right_length=${#date_str}
     local right_pos=$(( cols - right_length - 3 ))
 
-    PS1="${left_section}"
-    PS1+="\[\e[${right_pos}G\]"
-    PS1+="${right_section}"
-    PS1+="${RESET}\n$ "
+    PS1="${left_section}\[\e[${right_pos}G\]${right_section}${RESET}\n$ "
 }
 
 append_prompt_command build_prompt
