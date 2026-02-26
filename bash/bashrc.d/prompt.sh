@@ -27,36 +27,49 @@ function build_prompt() {
     local exit_code=$?
     local branch="$(git_branch)"
     local branch_icon="${BRANCH_ICONS[RANDOM % ${#BRANCH_ICONS[@]}]}"
+    local date_str="$(date +'%Y-%m-%d %H:%M:%S')"
 
-    PS1=""
-
-    # Status segment
+    # Left section
+    local left_section=""
+    ## Status segment
     if [[ "$exit_code" -eq 0 ]]; then
-        PS1+="${INVERT}${FG_KT}${RIGHT_SEPARATOR}${RESET}"
-        PS1+="${BOLD}${BG_KT}${FG_BLACK} ✓ "
-        PS1+="${BG_RY}${FG_KT}${RIGHT_SEPARATOR}"
+        left_section+="${INVERT}${FG_KT}${RIGHT_SEPARATOR}${RESET}"
+        left_section+="${BOLD}${BG_KT}${FG_BLACK} ✓ "
+        left_section+="${BG_RY}${FG_KT}${RIGHT_SEPARATOR}"
     else
-        PS1+="${INVERT}${BG_DEFAULT}${FG_WHITE}${RIGHT_SEPARATOR}${RESET}"
-        PS1+="${BOLD}${BG_WHITE}${FG_KT} ✗ "
-        PS1+="${BG_RY}${FG_DEFAULT}${RIGHT_SEPARATOR}"
+        left_section+="${INVERT}${BG_DEFAULT}${FG_WHITE}${RIGHT_SEPARATOR}${RESET}"
+        left_section+="${BOLD}${BG_WHITE}${FG_KT} ✗ "
+        left_section+="${BG_RY}${FG_DEFAULT}${RIGHT_SEPARATOR}"
     fi
-
-    # User
-    PS1+="${BG_RY}${FG_BLACK} \u "
-    PS1+="${BG_NJ}${FG_RY}${RIGHT_SEPARATOR}"
-
-    # Directory
-    PS1+="${BG_NJ}${FG_BLACK} \w "
-
-    # Git branch (if in git directory)
+    ## User
+    left_section+="${BG_RY}${FG_BLACK} \u "
+    left_section+="${BG_NJ}${FG_RY}${RIGHT_SEPARATOR}"
+    ## Directory
+    left_section+="${BG_NJ}${FG_BLACK} \w "
+    ## Git branch (if in git directory)
     if [ -n "$branch" ]; then
-        PS1+="${BG_BC}${FG_NJ}${RIGHT_SEPARATOR}"
-        PS1+="${BG_BC}${FG_BLACK} ${branch_icon} ${BRANCH} ${branch} "
-        PS1+="${BG_DEFAULT}${FG_BC}${RIGHT_SEPARATOR}"
+        left_section+="${BG_BC}${FG_NJ}${RIGHT_SEPARATOR}"
+        left_section+="${BG_BC}${FG_BLACK} ${branch_icon} ${BRANCH} ${branch} "
+        left_section+="${BG_DEFAULT}${FG_BC}${RIGHT_SEPARATOR}${RESET}"
     else
-        PS1+="${BG_DEFAULT}${FG_NJ}${RIGHT_SEPARATOR}"
+        left_section+="${BG_DEFAULT}${FG_NJ}${RIGHT_SEPARATOR}${RESET}"
     fi
 
+    # Right section
+    local right_section=""
+    ## Date
+    right_section+="${BG_DEFAULT}${FG_KK}${LEFT_SEPARATOR}"
+    right_section+="${BOLD}${BG_KK}${FG_WHITE} ${date_str} "
+    right_section+="${INVERT}${FG_KK}${BG_DEFAULT}${LEFT_SEPARATOR}"
+
+    # Right section alignment
+    local cols=$(tput cols)
+    local right_length=${#date_str}
+    local right_pos=$(( cols - right_length - 3 ))
+
+    PS1="${left_section}"
+    PS1+="\e[${right_pos}G"
+    PS1+="${right_section}"
     PS1+="${RESET}\n$ "
 }
 
