@@ -27,7 +27,7 @@ function build_prompt() {
     local exit_code=$?
     local branch="$(git_branch)"
     local branch_icon="${BRANCH_ICONS[RANDOM % ${#BRANCH_ICONS[@]}]}"
-    local date_str="$(date +'%Y-%m-%d %H:%M:%S')"
+    local date_str="\D{%Y-%m-%d %H:%M:%S}"
 
     # Left section
     local left_section=""
