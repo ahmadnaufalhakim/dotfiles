@@ -63,9 +63,9 @@ function build_prompt() {
     right_section+="${INVERT}${FG_KK}${BG_DEFAULT}${LEFT_SEPARATOR}"
 
     # Right section alignment
-    local cols=$(tput cols)
+    local cols="$COLUMNS"
     local right_length=${#date_str}
-    local right_pos=$(( cols - right_length - 3 ))
+    local right_pos=$(( cols - right_length - 1 ))
 
     PS1="${left_section}\[\e[${right_pos}G\]${right_section}${RESET}\n$ "
 }
