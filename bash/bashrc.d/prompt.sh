@@ -56,7 +56,7 @@ timer_color_bg() {
         g=0
     fi
 
-    printf "\\[\\e[48;2;%d;%d;0m\\]" "$r" "$g"
+    printf "\\[\\e[48;2;%d;%d;79m\\]" "$r" "$g"
 }
 
 # timer_color_fg dynamically sets the foreground color of
@@ -81,7 +81,7 @@ timer_color_fg() {
         g=0
     fi
 
-    printf "\\[\\e[38;2;%d;%d;0m\\]" "$r" "$g"
+    printf "\\[\\e[38;2;%d;%d;79m\\]" "$r" "$g"
 }
 
 # append_prompt_command appends a command to the current PROMPT_COMMAND
@@ -122,7 +122,7 @@ function build_prompt() {
         BG_TIMER=$(timer_color_bg "$TIMER_DURATION_MS")
 
         # Choose readable foreground
-        if (( TIMER_DURATION_MS <= 20000 )); then
+        if (( TIMER_DURATION_MS <= 30000 )); then
             FG_TIMER="${FG_BLACK}"
         else
             FG_TIMER="${FG_WHITE}"
