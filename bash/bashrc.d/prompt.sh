@@ -2,9 +2,37 @@
 
 # BRANCH_ICONS=("𖣂" "𖦥" "⎇")
 BRANCH_ICONS=("𖣂")
-
 RIGHT_SEPARATOR=$'\uE0B0'
 LEFT_SEPARATOR=$'\uE0B2'
+
+# Check if current bash version is at least 5
+if (( BASH_VERSINFO[0] >= 5 )); then
+    USE_EPOCHREALTIME=1
+else
+    USE_EPOCHREALTIME=0
+fi
+
+# timer_start starts the timer for the current command
+# timer_stop stops the timer after the command is finish running
+if (( USE_EPOCHREALTIME )); then
+    function timer_start() {
+        TIMER_START_MS=$(awk "BEGIN {printf \"%d\", $EPOCHREALTIME * 1000}")
+    }
+    function timer_stop() {
+        local now
+        now=$(awk "BEGIN {printf \"%d\", $EPOCHREALTIME * 1000}")
+        TIMER_DURATION_MS=$(( now - TIMER_START_MS ))
+    }
+else
+    function timer_start() {
+        TIMER_START_MS=$(date +%s%3N)
+    }
+    function timer_stop() {
+        local now=$(date +%s%3N)
+        dur_ms=$(( now - TIMER_START_MS ))
+        TIMER_DURATION_MS=$(awk "BEGIN {printf \"%.3f\", $dur_ms/1000}")
+    }
+fi
 
 # append_prompt_command appends a command to the current PROMPT_COMMAND
 function append_prompt_command() {
@@ -24,12 +52,27 @@ function git_branch() {
 
 # build_prompt assembles the PS1
 function build_prompt() {
+    # Left section variables
     local exit_code=$?
-    local branch="$(git_branch)"
+    timer_stop
     local branch_icon="${BRANCH_ICONS[RANDOM % ${#BRANCH_ICONS[@]}]}"
-    local date_str="\D{%Y-%m-%d %H:%M:%S}"
+    local branch
+    branch="$(git_branch)"
 
-    # Left section
+    # Right section variables
+    local date_str="\D{%Y-%m-%d %H:%M:%S}"
+    local duration_str""
+    # Only show command duration if >250ms
+    if (( TIMER_DURATION_MS > 250 )); then
+        local formatted
+        formatted=$(awk "BEGIN {printf \"%.3f\", $TIMER_DURATION_MS / 1000}")
+        duration_str=" ${formatted}s "
+    fi
+
+    # Right section character offset
+    local offset=0
+
+    # Left section prompt string
     local left_section=""
     ## Status segment
     if [[ "$exit_code" -eq 0 ]]; then
@@ -49,26 +92,37 @@ function build_prompt() {
     ## Git branch (if in git directory)
     if [ -n "$branch" ]; then
         left_section+="${BG_BC}${FG_NJ}${RIGHT_SEPARATOR}"
-        left_section+="${BG_BC}${FG_BLACK} ${branch_icon} ${BRANCH} ${branch} "
+        left_section+="${BG_BC}${FG_BLACK} ${branch_icon} ${branch} "
         left_section+="${BG_DEFAULT}${FG_BC}${RIGHT_SEPARATOR}${RESET}"
     else
         left_section+="${BG_DEFAULT}${FG_NJ}${RIGHT_SEPARATOR}${RESET}"
     fi
 
-    # Right section
+    # Right section prompt string
     local right_section=""
+    ## Command duration
+    if [[ -n "$duration_str" ]]; then
+        right_section+="${BG_DEFAULT}${FG_TIMER}${LEFT_SEPARATOR}"
+        right_section+="${BOLD}${BG_TIMER}${FG_BLACK}${duration_str}"
+        right_section+="${BG_TIMER}${FG_KK}${LEFT_SEPARATOR}"
+        ((offset++))
+    else
+        right_section+="${BG_DEFAULT}${FG_KK}${LEFT_SEPARATOR}"
+    fi
     ## Date
-    right_section+="${BG_DEFAULT}${FG_KK}${LEFT_SEPARATOR}"
     right_section+="${BOLD}${BG_KK}${FG_WHITE} ${date_str} "
     right_section+="${INVERT}${FG_KK}${BG_DEFAULT}${LEFT_SEPARATOR}"
+    ((offset++))
 
     # Right section alignment
     local cols="$COLUMNS"
-    local right_length=${#date_str}
-    local right_pos=$(( cols - right_length - 1 ))
+    local right_length=$(( ${#duration_str} + ${#date_str} ))
+    local right_pos=$(( cols - right_length - offset ))
 
     PS1="${left_section}\[\e[${right_pos}G\]${right_section}${RESET}\n$ "
 }
 
 append_prompt_command build_prompt
 append_prompt_command set_goprivate
+# Start timer before each command
+trap '[[ $BASH_COMMAND != "build_prompt" ]] && timer_start' DEBUG
