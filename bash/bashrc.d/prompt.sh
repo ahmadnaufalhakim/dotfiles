@@ -36,7 +36,7 @@ fi
 
 # timer_color_bg dynamically sets the background color of
 # the terminal based on the command time value
-timer_color_bg() {
+function timer_color_bg() {
     local ms=$1
     local max=55000
 
@@ -61,7 +61,7 @@ timer_color_bg() {
 
 # timer_color_fg dynamically sets the foreground color of
 # the terminal based on the command time value
-timer_color_fg() {
+function timer_color_fg() {
     local ms=$1
     local max=55000
 
