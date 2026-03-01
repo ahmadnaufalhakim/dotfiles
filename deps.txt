@@ -1,0 +1,5 @@
+curl
+ffmpeg
+jp2a
+neofetch
+wslu
