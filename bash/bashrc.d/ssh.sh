@@ -3,9 +3,9 @@
 PRV_KEY="$HOME/.ssh/github_ed25519"
 AGENT_FILE="$HOME/.ssh/.agent.env"
 
-# start_agent starts a new ss-agent, saves its
+# start_agent starts a new ssh-agent, saves its
 # environment variables to a file for reuse
-function start_agent() {
+start_agent() {
     eval "$(ssh-agent -s)" >/dev/null
     {
         echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK"

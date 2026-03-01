@@ -45,7 +45,7 @@ declare -A git_aliases=(
 )
 
 # load_git_completion loads git bash autocompletion script
-function load_git_completion() {
+load_git_completion() {
     type __git_complete &>/dev/null && return
 
     # Common Linux path

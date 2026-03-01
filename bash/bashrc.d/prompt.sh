@@ -32,7 +32,7 @@ fi
 
 # format_duration formats the command duration
 # (in milliseconds) into a human-readable string
-function format_duration() {
+format_duration() {
     local ms=$1
 
     if (( ms < 60000 )); then
@@ -53,7 +53,7 @@ function format_duration() {
 
 # timer_color_bg dynamically sets the background color of
 # the terminal based on the command time value
-function timer_color_bg() {
+timer_color_bg() {
     local ms=$1
     local max=55000
 
@@ -78,7 +78,7 @@ function timer_color_bg() {
 
 # timer_color_fg dynamically sets the foreground color of
 # the terminal based on the command time value
-function timer_color_fg() {
+timer_color_fg() {
     local ms=$1
     local max=55000
 
@@ -102,7 +102,7 @@ function timer_color_fg() {
 }
 
 # append_prompt_command appends a command to the current PROMPT_COMMAND
-function append_prompt_command() {
+append_prompt_command() {
     local cmd="$1"
     case ";$PROMPT_COMMAND" in
         *";$cmd;"*) ;; # already added
@@ -111,12 +111,12 @@ function append_prompt_command() {
 }
 
 # git_branch prints current git branch
-function git_branch() {
+git_branch() {
     git rev-parse --abbrev-ref HEAD 2>/dev/null
 }
 
 # build_prompt assembles the PS1
-function build_prompt() {
+build_prompt() {
     # Left section variables
     local exit_code=$?
     timer_stop
