@@ -112,8 +112,6 @@ function append_prompt_command() {
 
 # git_branch prints current git branch
 function git_branch() {
-    # Check if inside a git directory
-    git rev-parse --is-inside-work-tree &>/dev/null || return
     git rev-parse --abbrev-ref HEAD 2>/dev/null
 }
 
