@@ -16,21 +16,17 @@ fi
 # timer_stop stops the timer after the command is finish running
 if (( USE_EPOCHREALTIME )); then
     function timer_start() {
-        TIMER_START_MS=$(awk "BEGIN {printf \"%d\", $EPOCHREALTIME * 1000}")
+        TIMER_START_US=${EPOCHREALTIME/./}
     }
     function timer_stop() {
-        local now
-        now=$(awk "BEGIN {printf \"%d\", $EPOCHREALTIME * 1000}")
-        TIMER_DURATION_MS=$(( now - TIMER_START_MS ))
+        TIMER_DURATION_MS=$(( (${EPOCHREALTIME/./} - TIMER_START_US) / 1000 ))
     }
 else
     function timer_start() {
         TIMER_START_MS=$(date +%s%3N)
     }
     function timer_stop() {
-        local now=$(date +%s%3N)
-        dur_ms=$(( now - TIMER_START_MS ))
-        TIMER_DURATION_MS=$(awk "BEGIN {printf \"%.3f\", $dur_ms/1000}")
+        TIMER_DURATION_MS=$(( ($(date +%s%3N) - TIMER_START_MS) ))
     }
 fi
 
