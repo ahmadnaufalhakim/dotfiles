@@ -34,6 +34,27 @@ else
     }
 fi
 
+# format_duration formats the command duration
+# (in milliseconds) into a human-readable string
+function format_duration() {
+    local ms=$1
+
+    if (( ms < 60000 )); then
+        printf "%d.%03ds" $(( ms / 1000 )) $(( ms % 1000 ))
+    elif (( ms < 3600000 )); then
+        local seconds=$(( ms / 1000 ))
+        local minutes=$(( seconds / 60 ))
+        seconds=$(( seconds % 60 ))
+        printf "%dm %02ds" "$minutes" "$seconds"
+    else
+        local seconds=$(( ms / 1000 ))
+        local hours=$(( seconds / 3600 ))
+        local minutes=$(( (seconds % 3600) / 60 ))
+        seconds=$(( seconds % 60 ))
+        printf "%dh %02dm %02ds" "$hours" "$minutes" "$seconds"
+    fi
+}
+
 # timer_color_bg dynamically sets the background color of
 # the terminal based on the command time value
 function timer_color_bg() {
@@ -115,8 +136,8 @@ function build_prompt() {
     # Only show command duration if >250ms
     if (( TIMER_DURATION_MS > 250 )); then
         local formatted
-        formatted=$(awk "BEGIN {printf \"%.3f\", $TIMER_DURATION_MS / 1000}")
-        duration_str=" ${formatted}s "
+        formatted=$(format_duration $TIMER_DURATION_MS)
+        duration_str=" ${formatted} "
 
         # Generate dynamic timer background color
         BG_TIMER=$(timer_color_bg "$TIMER_DURATION_MS")
