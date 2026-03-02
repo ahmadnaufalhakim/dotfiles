@@ -106,7 +106,7 @@ append_prompt_command() {
     local cmd="$1"
     case ";$PROMPT_COMMAND" in
         *"$cmd"*) ;; # already added
-        *) PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND;}$cmd"
+        *) PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND;}$cmd" ;;
     esac
 }
 
