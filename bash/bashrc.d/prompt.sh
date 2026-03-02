@@ -105,7 +105,7 @@ timer_color_fg() {
 append_prompt_command() {
     local cmd="$1"
     case ";$PROMPT_COMMAND" in
-        *";$cmd;"*) ;; # already added
+        *"$cmd"*) ;; # already added
         *) PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND;}$cmd"
     esac
 }
@@ -126,7 +126,7 @@ build_prompt() {
 
     # Right section variables
     local date_str="\D{%Y-%m-%d %H:%M:%S}"
-    local duration_str""
+    local duration_str=""
     # Only show command duration if >250ms
     if (( TIMER_DURATION_MS > 250 )); then
         local formatted
@@ -199,5 +199,3 @@ build_prompt() {
 
 append_prompt_command build_prompt
 append_prompt_command set_goprivate
-# Start timer before each command
-trap '[[ $BASH_COMMAND != "build_prompt" ]] && timer_start' DEBUG
