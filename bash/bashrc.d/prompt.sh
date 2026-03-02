@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Timer internal state
+__TIMER_ACTIVE=0
+
 # BRANCH_ICONS=("𖣂" "𖦥" "⎇")
 BRANCH_ICONS=("𖣂")
 RIGHT_SEPARATOR=$'\uE0B0'
@@ -104,10 +107,11 @@ timer_color_fg() {
 # append_prompt_command appends a command to the current PROMPT_COMMAND
 append_prompt_command() {
     local cmd="$1"
-    case ";$PROMPT_COMMAND" in
-        *"$cmd"*) ;; # already added
-        *) PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND;}$cmd" ;;
-    esac
+    if [[ -z "$PROMPT_COMMAND" ]]; then
+        PROMPT_COMMAND="$cmd"
+    elif [[ ";$PROMPT_COMMAND;" != *";$cmd;"* ]]; then
+        PROMPT_COMMAND="${PROMPT_COMMAND%;};$cmd"
+    fi
 }
 
 # git_branch prints current git branch
@@ -117,9 +121,15 @@ git_branch() {
 
 # build_prompt assembles the PS1
 build_prompt() {
-    # Left section variables
     local exit_code=$?
-    timer_stop
+    if [[ $__TIMER_ACTIVE -eq 1 ]]; then
+        timer_stop
+        __TIMER_ACTIVE=0
+    fi
+    local duration_ms="$TIMER_DURATION_MS"
+    TIMER_DURATION_MS=0
+
+    # Left section variables
     local branch_icon="${BRANCH_ICONS[RANDOM % ${#BRANCH_ICONS[@]}]}"
     local branch
     branch="$(git_branch)"
@@ -128,16 +138,16 @@ build_prompt() {
     local date_str="\D{%Y-%m-%d %H:%M:%S}"
     local duration_str=""
     # Only show command duration if >250ms
-    if (( TIMER_DURATION_MS > 250 )); then
+    if (( duration_ms > 250 )); then
         local formatted
-        formatted=$(format_duration $TIMER_DURATION_MS)
+        formatted=$(format_duration $duration_ms)
         duration_str=" ${formatted} "
 
         # Generate dynamic timer background color
-        BG_TIMER=$(timer_color_bg "$TIMER_DURATION_MS")
+        BG_TIMER=$(timer_color_bg "$duration_ms")
 
         # Choose readable foreground
-        if (( TIMER_DURATION_MS <= 30000 )); then
+        if (( duration_ms <= 30000 )); then
             FG_TIMER="${FG_BLACK}"
         else
             FG_TIMER="${FG_WHITE}"
@@ -197,5 +207,19 @@ build_prompt() {
     PS1="${left_section}\[\e[${right_pos}G\]${right_section}${RESET}\n$ "
 }
 
+__timer_debug() {
+    [[ $- != *i* ]] && return
+    [[ -n "$COMP_LINE" ]] && return
+    [[ "$__TIMER_ACTIVE" -eq 1 ]] && return
+
+    case "$BASH_COMMAND" in
+        build_prompt|set_goprivate) return ;;
+    esac
+
+    __TIMER_ACTIVE=1
+    timer_start
+}
+
 append_prompt_command build_prompt
 append_prompt_command set_goprivate
+trap '__timer_debug' DEBUG
