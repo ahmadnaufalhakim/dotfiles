@@ -52,12 +52,14 @@ format_duration() {
     fi
 }
 
-# timer_color_bg dynamically sets the background color of
-# the terminal based on the command time value
-timer_color_bg() {
+# timer_color dynamically sets the color of
+# the timer section based on the time it takes
+# to execute a command
+timer_color() {
     local ms=$1
-    local max=55000
+    local type=$2
 
+    local max=55000
     (( ms < 0 )) && ms=0
     (( ms > max )) && ms=$max
 
@@ -74,32 +76,9 @@ timer_color_bg() {
         g=0
     fi
 
-    printf "\\[\\e[48;2;%d;%d;79m\\]" "$r" "$g"
-}
+    [[ $type == fg ]] && type=38 || type=48
 
-# timer_color_fg dynamically sets the foreground color of
-# the terminal based on the command time value
-timer_color_fg() {
-    local ms=$1
-    local max=55000
-
-    (( ms < 0 )) && ms=0
-    (( ms > max )) && ms=$max
-
-    local r=0 g=0
-
-    if (( ms <= 20000 )); then
-        r=$(( ms * 255 / 20000 ))
-        g=255
-    elif (( ms <= 40000 )); then
-        r=255
-        g=$(( (40000 - ms) * 255 / 20000 ))
-    else
-        r=$(( (60000 - ms) * 255 / 20000 ))
-        g=0
-    fi
-
-    printf "\\[\\e[38;2;%d;%d;79m\\]" "$r" "$g"
+    printf "\\[\\e[%s;2;%d;%d;79m\\]" "$type" "$r" "$g"
 }
 
 # append_prompt_command appends a command to the current PROMPT_COMMAND
@@ -142,7 +121,7 @@ build_prompt() {
         duration_str=" ${formatted} "
 
         # Generate dynamic timer background color
-        BG_TIMER=$(timer_color_bg "$duration_ms")
+        BG_TIMER=$(timer_color "$duration_ms" bg)
 
         # Choose readable foreground
         if (( duration_ms <= 30000 )); then
@@ -185,7 +164,7 @@ build_prompt() {
     local right_section=""
     ## Command duration
     if [[ -n "$duration_str" ]]; then
-        right_section+="${BG_DEFAULT}$(timer_color_fg "$duration_ms")${LEFT_SEPARATOR}"
+        right_section+="${BG_DEFAULT}$(timer_color "$duration_ms" fg)${LEFT_SEPARATOR}"
         right_section+="${BOLD}${BG_TIMER}${FG_TIMER}${duration_str}"
         right_section+="${BG_TIMER}${FG_KK}${LEFT_SEPARATOR}"
         ((offset++))
