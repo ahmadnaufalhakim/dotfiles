@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-# Timer internal state
 __TIMER_ACTIVE=0
 
-# BRANCH_ICONS=("𖣂" "𖦥" "⎇")
-BRANCH_ICONS=("𖣂")
+BRANCH_ICONS=("𖣂" "𖦥" "⎇")
 RIGHT_SEPARATOR=$'\uE0B0'
 LEFT_SEPARATOR=$'\uE0B2'
 
@@ -18,17 +16,17 @@ fi
 # timer_start starts the timer for the current command
 # timer_stop stops the timer after the command is finish running
 if (( USE_EPOCHREALTIME )); then
-    function timer_start() {
+    timer_start() {
         TIMER_START_US=${EPOCHREALTIME/./}
     }
-    function timer_stop() {
+    timer_stop() {
         TIMER_DURATION_MS=$(( (${EPOCHREALTIME/./} - TIMER_START_US) / 1000 ))
     }
 else
-    function timer_start() {
+    timer_start() {
         TIMER_START_MS=$(date +%s%3N)
     }
-    function timer_stop() {
+    timer_stop() {
         TIMER_DURATION_MS=$(( ($(date +%s%3N) - TIMER_START_MS) ))
     }
 fi
@@ -140,7 +138,7 @@ build_prompt() {
     # Only show command duration if >250ms
     if (( duration_ms > 250 )); then
         local formatted
-        formatted=$(format_duration $duration_ms)
+        formatted=$(format_duration "$duration_ms")
         duration_str=" ${formatted} "
 
         # Generate dynamic timer background color
@@ -187,7 +185,7 @@ build_prompt() {
     local right_section=""
     ## Command duration
     if [[ -n "$duration_str" ]]; then
-        right_section+="${BG_DEFAULT}$(timer_color_fg $TIMER_DURATION_MS)${LEFT_SEPARATOR}"
+        right_section+="${BG_DEFAULT}$(timer_color_fg "$duration_ms")${LEFT_SEPARATOR}"
         right_section+="${BOLD}${BG_TIMER}${FG_TIMER}${duration_str}"
         right_section+="${BG_TIMER}${FG_KK}${LEFT_SEPARATOR}"
         ((offset++))
@@ -200,9 +198,8 @@ build_prompt() {
     ((offset++))
 
     # Right section alignment
-    local cols="$COLUMNS"
     local right_length=$(( ${#duration_str} + ${#date_str} ))
-    local right_pos=$(( cols - right_length - offset ))
+    local right_pos=$(( COLUMNS - right_length - offset ))
 
     PS1="${left_section}\[\e[${right_pos}G\]${right_section}${RESET}\n$ "
 }
