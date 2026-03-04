@@ -201,7 +201,10 @@ build_prompt() {
 
     local barrier_len=$(( right_pos - left_pos ))
     if (( barrier_len < 0 )); then barrier_len=0; fi
-    local barrier=$(yes "$BARRIER" | head -n "$barrier_len" | tr -d '\n')
+    local barrier=""
+    for (( i=0; i<barrier_len; i++)); do
+        barrier+="$BARRIER"
+    done
 
     PS1="${left_section}${RIGHT_BARRIER}${barrier}${LEFT_BARRIER}${right_section}${RESET}\n$ "
 }
