@@ -107,12 +107,7 @@ build_prompt() {
     local branch_icon="${BRANCH_ICONS[RANDOM % ${#BRANCH_ICONS[@]}]}"
     local status_str
     local user_str=" $USER "
-    local dir_str=" $PWD "
-    if [[ "$PWD" == "$HOME"* ]]; then
-        dir_str=" ~${PWD#$HOME} "
-    else
-        dir_str=" $PWD "
-    fi
+    local dir_str=$([[ "$PWD" == "$HOME"* ]] && echo " ~${PWD#$HOME} " || echo " $PWD ")
     local branch branch_str
     branch="$(git_branch)"
     local left_offset=2
