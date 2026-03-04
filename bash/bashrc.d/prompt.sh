@@ -38,20 +38,14 @@ fi
 # (in milliseconds) into a human-readable string
 format_duration() {
     local ms=$1
+    local sec=$(( ms / 1000 ))
 
-    if (( ms < 60000 )); then
-        printf "%d.%03ds" $(( ms / 1000 )) $(( ms % 1000 ))
-    elif (( ms < 3600000 )); then
-        local seconds=$(( ms / 1000 ))
-        local minutes=$(( seconds / 60 ))
-        seconds=$(( seconds % 60 ))
-        printf "%dm %02ds" "$minutes" "$seconds"
+    if (( sec < 60 )); then
+        printf "%d.%03ds" "$sec" "$(( ms % 1000 ))"
+    elif (( sec < 3600 )); then
+        printf "%dm %02ds" "$(( sec / 60 ))" "$(( sec % 60 ))"
     else
-        local seconds=$(( ms / 1000 ))
-        local hours=$(( seconds / 3600 ))
-        local minutes=$(( (seconds % 3600) / 60 ))
-        seconds=$(( seconds % 60 ))
-        printf "%dh %02dm %02ds" "$hours" "$minutes" "$seconds"
+        printf "%dh %02dm %02ds" "$(( sec / 3600 ))" "$(( (sec % 3600)/60 ))" "$(( sec % 60 ))"
     fi
 }
 
