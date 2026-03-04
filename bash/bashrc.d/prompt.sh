@@ -5,6 +5,9 @@ __TIMER_ACTIVE=0
 BRANCH_ICONS=("𖣂" "𖦥" "⎇")
 RIGHT_SEPARATOR=$'\uE0B0'
 LEFT_SEPARATOR=$'\uE0B2'
+RIGHT_BARRIER=$'\uE0B1'
+LEFT_BARRIER=$'\uE0B3'
+BARRIER="─"
 
 # Check if current bash version is at least 5
 if (( BASH_VERSINFO[0] >= 5 )); then
@@ -108,8 +111,17 @@ build_prompt() {
 
     # Left section variables
     local branch_icon="${BRANCH_ICONS[RANDOM % ${#BRANCH_ICONS[@]}]}"
-    local branch
+    local status_str
+    local user_str=" $USER "
+    local dir_str=" $PWD "
+    if [[ "$PWD" == "$HOME"* ]]; then
+        dir_str=" ~${PWD#$HOME} "
+    else
+        dir_str=" $PWD "
+    fi
+    local branch branch_str
     branch="$(git_branch)"
+    local left_offset=2
 
     # Right section variables
     local date_str="\D{%Y-%m-%d %H:%M:%S}"
@@ -130,32 +142,37 @@ build_prompt() {
             FG_TIMER="${FG_WHITE}"
         fi
     fi
-
-    # Right section character offset
-    local offset=0
+    local right_offset=2
 
     # Left section prompt string
     local left_section=""
     ## Status segment
     if [[ "$exit_code" -eq 0 ]]; then
+        status_str=" ✓ "
         left_section+="${INVERT}${FG_KT}${RIGHT_SEPARATOR}${RESET}"
-        left_section+="${BOLD}${BG_KT}${FG_BLACK} ✓ "
+        left_section+="${BOLD}${BG_KT}${FG_BLACK}${status_str}"
         left_section+="${BG_RY}${FG_KT}${RIGHT_SEPARATOR}"
     else
+        status_str=" ✗ "
         left_section+="${INVERT}${BG_DEFAULT}${FG_WHITE}${RIGHT_SEPARATOR}${RESET}"
-        left_section+="${BOLD}${BG_WHITE}${FG_KT} ✗ "
+        left_section+="${BOLD}${BG_WHITE}${FG_KT}${status_str}"
         left_section+="${BG_RY}${FG_DEFAULT}${RIGHT_SEPARATOR}"
     fi
+    ((left_offset++))
     ## User
-    left_section+="${BG_RY}${FG_BLACK} \u "
+    left_section+="${BG_RY}${FG_BLACK}${user_str}"
     left_section+="${BG_NJ}${FG_RY}${RIGHT_SEPARATOR}"
+    ((left_offset++))
     ## Directory
-    left_section+="${BG_NJ}${FG_BLACK} \w "
+    left_section+="${BG_NJ}${FG_BLACK}${dir_str}"
+    ((left_offset++))
     ## Git branch (if in git directory)
     if [ -n "$branch" ]; then
+        branch_str=" ${branch_icon} ${branch} "
         left_section+="${BG_BC}${FG_NJ}${RIGHT_SEPARATOR}"
-        left_section+="${BG_BC}${FG_BLACK} ${branch_icon} ${branch} "
+        left_section+="${BG_BC}${FG_BLACK}${branch_str}"
         left_section+="${BG_DEFAULT}${FG_BC}${RIGHT_SEPARATOR}${RESET}"
+        ((left_offset++))
     else
         left_section+="${BG_DEFAULT}${FG_NJ}${RIGHT_SEPARATOR}${RESET}"
     fi
@@ -167,20 +184,26 @@ build_prompt() {
         right_section+="${BG_DEFAULT}$(timer_color "$duration_ms" fg)${LEFT_SEPARATOR}"
         right_section+="${BOLD}${BG_TIMER}${FG_TIMER}${duration_str}"
         right_section+="${BG_TIMER}${FG_KK}${LEFT_SEPARATOR}"
-        ((offset++))
+        ((right_offset++))
     else
         right_section+="${BG_DEFAULT}${FG_KK}${LEFT_SEPARATOR}"
     fi
     ## Date
     right_section+="${BOLD}${BG_KK}${FG_WHITE} ${date_str} "
     right_section+="${INVERT}${FG_KK}${BG_DEFAULT}${LEFT_SEPARATOR}"
-    ((offset++))
+    ((right_offset++))
 
     # Right section alignment
+    local left_length=$(( ${#status_str} + ${#user_str} + ${#dir_str} + ${#branch_str} ))
+    local left_pos=$(( left_length + left_offset ))
     local right_length=$(( ${#duration_str} + ${#date_str} ))
-    local right_pos=$(( COLUMNS - right_length - offset ))
+    local right_pos=$(( COLUMNS - right_length - right_offset ))
 
-    PS1="${left_section}\[\e[${right_pos}G\]${right_section}${RESET}\n$ "
+    local barrier_len=$(( right_pos - left_pos ))
+    if (( barrier_len < 0 )); then barrier_len=0; fi
+    local barrier=$(yes "$BARRIER" | head -n "$barrier_len" | tr -d '\n')
+
+    PS1="${left_section}${RIGHT_BARRIER}${barrier}${LEFT_BARRIER}${right_section}${RESET}\n$ "
 }
 
 __timer_debug() {
