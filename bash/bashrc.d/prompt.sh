@@ -2,6 +2,7 @@
 
 __TIMER_ACTIVE=0
 __LAST_ERROR_SOUND=0
+__ERROR_SOUND_ENABLED=0
 
 ERROR_SOUND="$HOME/music/faah.mp3"
 ERROR_SOUND_COOLDOWN=5 # seconds
@@ -91,8 +92,28 @@ append_prompt_command() {
     fi
 }
 
-# play_error_sound plays error sound
+# error_sound_on enables the error sound
+# error_sound_off disables the error sound
+error_sound_on() {
+    __ERROR_SOUND_ENABLED=1
+    echo "Error sound enabled🔊"
+}
+error_sound_off() {
+    __ERROR_SOUND_ENABLED=0
+    echo "Error sound disabled🔇"
+}
+
+# toggle_error_sound toggles the error sound on or off
+toggle_error_sound() {
+    (( __ERROR_SOUND_ENABLED )) \
+        && error_sound_off \
+        || error_sound_on
+}
+
+# play_error_sound plays the error sound if enabled and cooldown has passed
 play_error_sound() {
+    (( __ERROR_SOUND_ENABLED == 0 )) && return
+
     local now
 
     if (( USE_EPOCHREALTIME )); then
