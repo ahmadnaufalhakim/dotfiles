@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 __TIMER_ACTIVE=0
+__LAST_ERROR_SOUND=0
 
+ERROR_SOUND="$HOME/music/faah.mp3"
+ERROR_SOUND_COOLDOWN=5 # seconds
 BRANCH_ICONS=("𖣂" "𖦥" "⎇")
 RIGHT_SEPARATOR=$'\uE0B0'
 LEFT_SEPARATOR=$'\uE0B2'
@@ -93,9 +96,29 @@ git_branch() {
     git rev-parse --abbrev-ref HEAD 2>/dev/null
 }
 
+# play_error_sound plays error sound
+play_error_sound() {
+    local now
+
+    if (( USE_EPOCHREALTIME )); then
+        now=${EPOCHREALTIME%.*}
+    else
+        now=$(date +%s)
+    fi
+
+    (( now - __LAST_ERROR_SOUND < ERROR_SOUND_COOLDOWN )) && return
+
+    __LAST_ERROR_SOUND=$now
+    if command -v mpv &>/dev/null && [[ -f "$ERROR_SOUND" ]]; then
+        mpv --no-terminal --really-quiet "$ERROR_SOUND" &>/dev/null &
+        disown
+    fi
+}
+
 # build_prompt assembles the PS1
 build_prompt() {
     local exit_code=$?
+    (( exit_code != 0 && exit_code != 130 )) && play_error_sound
     if [[ $__TIMER_ACTIVE -eq 1 ]]; then
         timer_stop
         __TIMER_ACTIVE=0
