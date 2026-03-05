@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# git_branch prints current git branch
+git_branch() {
+    git rev-parse --abbrev-ref HEAD 2>/dev/null
+}
+
 # Aliases
 alias g="git"
 alias gb="git branch"

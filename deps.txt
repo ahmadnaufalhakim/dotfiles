@@ -1,5 +1,6 @@
 curl
 ffmpeg
 jp2a
+mpv
 neofetch
 wslu

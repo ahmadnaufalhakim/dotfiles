@@ -91,11 +91,6 @@ append_prompt_command() {
     fi
 }
 
-# git_branch prints current git branch
-git_branch() {
-    git rev-parse --abbrev-ref HEAD 2>/dev/null
-}
-
 # play_error_sound plays error sound
 play_error_sound() {
     local now
