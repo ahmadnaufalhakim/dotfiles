@@ -126,7 +126,7 @@ play_error_sound() {
 
     __LAST_ERROR_SOUND=$now
     if command -v mpv &>/dev/null && [[ -f "$ERROR_SOUND" ]]; then
-        mpv --no-terminal --really-quiet "$ERROR_SOUND" &>/dev/null &
+        mpv --no-terminal --really-quiet --af=volume=.75 "$ERROR_SOUND" &>/dev/null &
         disown
     fi
 }
