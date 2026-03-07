@@ -23,23 +23,50 @@ else
     USE_EPOCHREALTIME=0
 fi
 
-# timer_start starts the command timer
-# timer_stop calculates command duration in ms
+# __timer_on captures the start timestamp
+# __timer_off calculates command duration
+# since the last __timer_on invokation in ms
 if (( USE_EPOCHREALTIME )); then
-    timer_start() {
-        TIMER_START_US=${EPOCHREALTIME/./}
+    __timer_on() {
+        __TIMER_START_US=${EPOCHREALTIME/./}
     }
-    timer_stop() {
-        TIMER_DURATION_MS=$(( (${EPOCHREALTIME/./} - TIMER_START_US) / 1000 ))
+    __timer_off() {
+        __TIMER_DURATION_MS=$(( (${EPOCHREALTIME/./} - __TIMER_START_US) / 1000 ))
     }
 else
-    timer_start() {
-        TIMER_START_MS=$(date +%s%3N)
+    __timer_on() {
+        __TIMER_START_MS=$(date +%s%3N)
     }
-    timer_stop() {
-        TIMER_DURATION_MS=$(( ($(date +%s%3N) - TIMER_START_MS) ))
+    __timer_off() {
+        __TIMER_DURATION_MS=$(( ($(date +%s%3N) - __TIMER_START_MS) ))
     }
 fi
+
+# start_timer starts timer before each command
+start_timer() {
+    [[ $- != *i* ]] && return
+    [[ -n "$COMP_LINE" ]] && return
+    [[ "$__TIMER_ACTIVE" -eq 1 ]] && return
+
+    case "$BASH_COMMAND" in
+        build_prompt|set_goprivate) return ;;
+    esac
+
+    __TIMER_ACTIVE=1
+    __timer_on
+}
+
+# stop_timer stops timer after each command
+stop_timer() {
+    if (( !__TIMER_ACTIVE )); then
+        duration_ms=0
+        return
+    fi
+
+    __timer_off
+    __TIMER_ACTIVE=0
+    duration_ms=$__TIMER_DURATION_MS
+}
 
 # format_duration converts duration (ms) into readable format
 format_duration() {
@@ -112,16 +139,27 @@ toggle_error_sound() {
         || error_sound_on
 }
 
+# detect_empty_command detects if current command is
+# empty (or the same) as the previous command (HISTCMD doesn't increment)
+detect_empty_command() {
+    if (( HISTCMD == __LAST_CMDNUM )); then
+        __CMD_WAS_EMPTY=1
+    else
+        __CMD_WAS_EMPTY=0
+        __LAST_CMDNUM=$HISTCMD
+    fi
+}
+
 # play_error_sound plays the error sound if enabled and cooldown has passed
 play_error_sound() {
-    (( __ERROR_SOUND_ENABLED == 0 )) && return
+    (( !__ERROR_SOUND_ENABLED )) && return
 
     local now
 
     if (( USE_EPOCHREALTIME )); then
         now=${EPOCHREALTIME%.*}
     else
-        now=$(date +%s)
+        printf -v now '%(%s)T' -1
     fi
 
     # Check sound cooldown
@@ -137,22 +175,10 @@ play_error_sound() {
 # build_prompt assembles the PS1
 build_prompt() {
     local exit_code=$?
+    local duration_ms
+    stop_timer
 
-    # Stop command timer
-    if [[ $__TIMER_ACTIVE -eq 1 ]]; then
-        timer_stop
-        __TIMER_ACTIVE=0
-    fi
-    local duration_ms="$TIMER_DURATION_MS"
-    TIMER_DURATION_MS=0
-
-    # Detect empty or same command as before (HISTCMD doesn't increment)
-    if (( HISTCMD == __LAST_CMDNUM )); then
-        __CMD_WAS_EMPTY=1
-    else
-        __CMD_WAS_EMPTY=0
-        __LAST_CMDNUM=$HISTCMD
-    fi
+    detect_empty_command
 
     # Play error sound only if command isn't the same command as
     # before, and the command failed
@@ -161,10 +187,16 @@ build_prompt() {
     fi
 
     # Left section variables
-    local branch_icon="${BRANCH_ICONS[RANDOM % ${#BRANCH_ICONS[@]}]}"
+    local branch_idx=$(( RANDOM % ${#BRANCH_ICONS[@]} ))
+    local branch_icon=${BRANCH_ICONS[branch_idx]}
     local status_str
     local user_str=" $USER "
-    local dir_str=$([[ "$PWD" == "$HOME"* ]] && echo " ~${PWD#$HOME} " || echo " $PWD ")
+    local dir_str
+    if [[ "$PWD" == "$HOME"* ]]; then
+        dir_str=" ~${PWD#$HOME} "
+    else
+        dir_str=" $PWD "
+    fi
     local branch branch_str
     branch="$(git_branch)"
     local left_offset=2
@@ -247,26 +279,10 @@ build_prompt() {
 
     local barrier_len=$(( right_pos - left_pos ))
     if (( barrier_len < 0 )); then barrier_len=0; fi
-    local barrier=""
-    for (( i=0; i<barrier_len; i++)); do
-        barrier+="$BARRIER"
-    done
+    printf -v barrier '%*s' "$barrier_len" ''
+    barrier=${barrier// /$BARRIER}
 
     PS1="${left_section}${RIGHT_BARRIER}${barrier}${LEFT_BARRIER}${right_section}${RESET}\n$ "
-}
-
-# DEBUG trap: starts timer before each command
-__timer_debug() {
-    [[ $- != *i* ]] && return
-    [[ -n "$COMP_LINE" ]] && return
-    [[ "$__TIMER_ACTIVE" -eq 1 ]] && return
-
-    case "$BASH_COMMAND" in
-        build_prompt|set_goprivate) return ;;
-    esac
-
-    __TIMER_ACTIVE=1
-    timer_start
 }
 
 # Register prompt hooks
@@ -274,4 +290,4 @@ append_prompt_command build_prompt
 append_prompt_command set_goprivate
 
 # Start timer before commands run
-trap '__timer_debug' DEBUG
+trap 'start_timer' DEBUG
