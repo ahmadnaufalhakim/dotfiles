@@ -1,27 +1,30 @@
 #!/usr/bin/env bash
 
+# Runtime states
 __TIMER_ACTIVE=0
+__LAST_CMDNUM=0
 __LAST_ERROR_SOUND=0
 __ERROR_SOUND_ENABLED=0
 
 ERROR_SOUND="$HOME/music/faah.mp3"
 ERROR_SOUND_COOLDOWN=5 # seconds
 BRANCH_ICONS=("𖣂" "𖦥" "⎇")
+
 RIGHT_SEPARATOR=$'\uE0B0'
 LEFT_SEPARATOR=$'\uE0B2'
 RIGHT_BARRIER=$'\uE0B1'
 LEFT_BARRIER=$'\uE0B3'
 BARRIER="─"
 
-# Check if current bash version is at least 5
+# Checks if bash supports EPOCHREALTIME (bash >= 5)
 if (( BASH_VERSINFO[0] >= 5 )); then
     USE_EPOCHREALTIME=1
 else
     USE_EPOCHREALTIME=0
 fi
 
-# timer_start starts the timer for the current command
-# timer_stop stops the timer after the command is finish running
+# timer_start starts the command timer
+# timer_stop calculates command duration in ms
 if (( USE_EPOCHREALTIME )); then
     timer_start() {
         TIMER_START_US=${EPOCHREALTIME/./}
@@ -38,8 +41,7 @@ else
     }
 fi
 
-# format_duration formats the command duration
-# (in milliseconds) into a human-readable string
+# format_duration converts duration (ms) into readable format
 format_duration() {
     local ms=$1
     local sec=$(( ms / 1000 ))
@@ -82,7 +84,7 @@ timer_color() {
     printf "\\[\\e[%s;2;%d;%d;79m\\]" "$type" "$r" "$g"
 }
 
-# append_prompt_command appends a command to the current PROMPT_COMMAND
+# append_prompt_command safely appends a command to the current PROMPT_COMMAND
 append_prompt_command() {
     local cmd="$1"
     if [[ -z "$PROMPT_COMMAND" ]]; then
@@ -122,6 +124,7 @@ play_error_sound() {
         now=$(date +%s)
     fi
 
+    # Check sound cooldown
     (( now - __LAST_ERROR_SOUND < ERROR_SOUND_COOLDOWN )) && return
 
     __LAST_ERROR_SOUND=$now
@@ -134,13 +137,28 @@ play_error_sound() {
 # build_prompt assembles the PS1
 build_prompt() {
     local exit_code=$?
-    (( exit_code != 0 && exit_code != 130 )) && play_error_sound
+
+    # Stop command timer
     if [[ $__TIMER_ACTIVE -eq 1 ]]; then
         timer_stop
         __TIMER_ACTIVE=0
     fi
     local duration_ms="$TIMER_DURATION_MS"
     TIMER_DURATION_MS=0
+
+    # Detect empty or same command as before (HISTCMD doesn't increment)
+    if (( HISTCMD == __LAST_CMDNUM )); then
+        __CMD_WAS_EMPTY=1
+    else
+        __CMD_WAS_EMPTY=0
+        __LAST_CMDNUM=$HISTCMD
+    fi
+
+    # Play error sound only if command isn't the same command as
+    # before, and the command failed
+    if (( __CMD_WAS_EMPTY == 0 && exit_code != 0 && exit_code != 130 )); then
+        play_error_sound
+    fi
 
     # Left section variables
     local branch_icon="${BRANCH_ICONS[RANDOM % ${#BRANCH_ICONS[@]}]}"
@@ -237,6 +255,7 @@ build_prompt() {
     PS1="${left_section}${RIGHT_BARRIER}${barrier}${LEFT_BARRIER}${right_section}${RESET}\n$ "
 }
 
+# DEBUG trap: starts timer before each command
 __timer_debug() {
     [[ $- != *i* ]] && return
     [[ -n "$COMP_LINE" ]] && return
@@ -250,6 +269,9 @@ __timer_debug() {
     timer_start
 }
 
+# Register prompt hooks
 append_prompt_command build_prompt
 append_prompt_command set_goprivate
+
+# Start timer before commands run
 trap '__timer_debug' DEBUG
