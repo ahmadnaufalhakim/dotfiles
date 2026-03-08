@@ -205,7 +205,7 @@ build_prompt() {
     local date_str="\D{%Y-%m-%d %H:%M:%S}"
     local duration_str=""
     # Only show command duration if >250ms
-    if (( duration_ms > 250 )); then
+    if (( duration_ms > 400 )); then
         local formatted
         formatted=$(format_duration "$duration_ms")
         duration_str=" ${formatted} "
