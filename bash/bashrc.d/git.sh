@@ -1,8 +1,60 @@
 #!/usr/bin/env bash
 
+__GIT_CACHE_PWD=""
+__GIT_CACHE_BRANCH=""
+__GIT_CACHE_ROOT=""
+
 # git_branch prints current git branch
 git_branch() {
-    git rev-parse --abbrev-ref HEAD 2>/dev/null
+    # Return cached branch if PWD hasn't changed
+    if [[ "$PWD" == "$__GIT_CACHE_PWD" ]]; then
+        printf "%s" "$__GIT_CACHE_BRANCH"
+        return
+    fi
+
+    __GIT_CACHE_PWD="$PWD"
+    __GIT_CACHE_BRANCH=""
+
+    # Use cached repo root if still inside the same repo
+    if [[ -z "$__GIT_CACHE_ROOT" || "$PWD" != "$__GIT_CACHE_ROOT"* ]]; then
+        local dir="$PWD"
+        __GIT_CACHE_ROOT=""
+
+        # Walk upwards to find .git directory or worktree file
+        while [[ -n "$dir" && "$dir" != "/" ]]; do
+            if [[ -d "$dir/.git" ]]; then
+                __GIT_CACHE_ROOT="$dir"
+                break
+            elif [[ -f "$dir/.git" ]]; then
+                # Worktree: read gitdir from file
+                local worktree_gitdir
+                read -r worktree_gitdir < "$dir/.git"
+                worktree_gitdir=${worktree_gitdir#gitdir: }
+                __GIT_CACHE_ROOT="$dir"
+                __GIT_CACHE_GITDIR="$worktree_gitdir"
+                break
+            fi
+
+            dir=${dir%/*} # walk upward
+            [[ -z "$dir" ]] && dir="/"
+        done
+    fi
+
+    # Determine actual git metadata directory
+    local gitdir="${__GIT_CACHE_GITDIR:-$__GIT_CACHE_ROOT/.git}"
+
+    # Exit if no repo found
+    [[ -r "$gitdir/HEAD" ]] || return
+
+    # Read HEAD and extract branch name or short commit hash
+    local head
+    read -r head < "$gitdir/HEAD"
+
+    [[ "$head" == ref:\ * ]] \
+        && __GIT_CACHE_BRANCH=${head#ref: refs/heads/} \
+        || __GIT_CACHE_BRANCH=${head:0:7} # detached HEAD: short commit hash
+
+    printf "%s" "$__GIT_CACHE_BRANCH"
 }
 
 # Aliases
