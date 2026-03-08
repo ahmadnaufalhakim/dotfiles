@@ -6,10 +6,16 @@ __LAST_CMDNUM=0
 __LAST_ERROR_SOUND=0
 __ERROR_SOUND_ENABLED=0
 
-ERROR_SOUND="$HOME/music/faah.mp3"
+ERROR_SOUND_DIR="$HOME/music/effects/error"
 ERROR_SOUND_COOLDOWN=5 # seconds
-BRANCH_ICONS=("𖣂" "𖦥" "⎇")
+ERROR_SOUNDS=()
+[[ -d "$ERROR_SOUND_DIR" ]] && {
+    shopt -s nullglob
+    ERROR_SOUNDS=("$ERROR_SOUND_DIR"/*.ogg)
+    shopt -u nullglob
+}
 
+BRANCH_ICONS=("𖣂" "𖦥" "⎇")
 RIGHT_SEPARATOR=$'\uE0B0'
 LEFT_SEPARATOR=$'\uE0B2'
 RIGHT_BARRIER=$'\uE0B1'
@@ -153,6 +159,7 @@ detect_empty_command() {
 # play_error_sound plays the error sound if enabled and cooldown has passed
 play_error_sound() {
     (( !__ERROR_SOUND_ENABLED )) && return
+    (( ${#ERROR_SOUNDS[@]} == 0 )) && return
 
     local now
 
@@ -164,12 +171,13 @@ play_error_sound() {
 
     # Check sound cooldown
     (( now - __LAST_ERROR_SOUND < ERROR_SOUND_COOLDOWN )) && return
-
     __LAST_ERROR_SOUND=$now
-    if command -v mpv &>/dev/null && [[ -f "$ERROR_SOUND" ]]; then
-        mpv --no-terminal --really-quiet --af=volume=.75 "$ERROR_SOUND" &>/dev/null &
-        disown
-    fi
+
+    command -v mpv &>/dev/null || return
+    local sound=${ERROR_SOUNDS[RANDOM % ${#ERROR_SOUNDS[@]}]}
+
+    mpv --no-terminal --really-quiet --af=volume=.75 "$sound" &>/dev/null &
+    disown
 }
 
 # build_prompt assembles the PS1
