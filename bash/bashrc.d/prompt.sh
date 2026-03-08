@@ -195,8 +195,11 @@ build_prompt() {
     fi
 
     # Left section variables
-    local branch_idx=$(( RANDOM % ${#BRANCH_ICONS[@]} ))
-    local branch_icon=${BRANCH_ICONS[branch_idx]}
+    local branch_icon=""
+    (( ${#BRANCH_ICONS[@]} > 0 )) && {
+        local branch_idx=$(( RANDOM % ${#BRANCH_ICONS[@]} ))
+        branch_icon=${BRANCH_ICONS[branch_idx]}
+    }
     local status_str
     local user_str=" $USER "
     local dir_str
