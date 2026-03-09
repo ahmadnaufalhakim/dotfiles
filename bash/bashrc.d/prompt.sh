@@ -117,6 +117,48 @@ timer_color() {
     printf "\\[\\e[%s;2;%d;%d;79m\\]" "$type" "$r" "$g"
 }
 
+# short_pwd construct the PWD dir, but shortened
+short_pwd() {
+    local depth=${1:-3}
+    local path
+
+    # Replace $HOME with ~
+    if [[ "$PWD" == "$HOME"* ]]; then
+        path="~${PWD#$HOME}"
+    else
+        path="$PWD"
+    fi
+
+    # Split into components
+    IFS='/' read -ra parts <<< "$path"
+    local count=${#parts[@]}
+
+    local tilde=0
+    [[ ${parts[0]} == "~" ]] && tilde=1
+    if (( count <= depth + tilde )); then
+        printf "%s" "$path"
+        return
+    fi
+
+    # If path is longer than depth, show ellipsis; include number if >1
+    local skipped=$(( count - depth - tilde ))
+    local ellipsis="..."
+    (( skipped > 1 )) && ellipsis="...($skipped)"
+
+    local last_segments=""
+    local start=$((count - depth))
+    for ((i=start; i<count; i++)); do
+        last_segments+="${parts[i]}"
+        (( i < count - 1 )) && last_segments+="/"
+    done
+
+    if (( tilde )); then
+        printf "~/%s/%s" "$ellipsis" "$last_segments"
+    else
+        printf "%s/%s" "$ellipsis" "$last_segments"
+    fi
+}
+
 # append_prompt_command safely appends a command to the current PROMPT_COMMAND
 append_prompt_command() {
     local cmd="$1"
@@ -203,11 +245,7 @@ build_prompt() {
     local status_str
     local user_str=" $USER "
     local dir_str
-    if [[ "$PWD" == "$HOME"* ]]; then
-        dir_str=" ~${PWD#$HOME} "
-    else
-        dir_str=" $PWD "
-    fi
+    dir_str=" $(short_pwd 3) "
     local branch branch_str
     branch="$(git_branch)"
     local left_offset=2
