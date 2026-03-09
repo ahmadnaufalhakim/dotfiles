@@ -198,7 +198,7 @@ build_prompt() {
     local branch_icon=""
     (( ${#BRANCH_ICONS[@]} > 0 )) && {
         local branch_idx=$(( RANDOM % ${#BRANCH_ICONS[@]} ))
-        branch_icon=${BRANCH_ICONS[branch_idx]}
+        branch_icon=${BRANCH_ICONS[$branch_idx]}
     }
     local status_str
     local user_str=" $USER "
