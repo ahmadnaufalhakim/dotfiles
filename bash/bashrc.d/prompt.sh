@@ -44,7 +44,7 @@ else
         __TIMER_START_MS=$(date +%s%3N)
     }
     __timer_off() {
-        __TIMER_DURATION_MS=$(( ($(date +%s%3N) - __TIMER_START_MS) ))
+        __TIMER_DURATION_MS=$(( $(date +%s%3N) - __TIMER_START_MS ))
     }
 fi
 
