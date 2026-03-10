@@ -14,6 +14,7 @@ ERROR_SOUNDS=()
     ERROR_SOUNDS=("$ERROR_SOUND_DIR"/*.ogg)
     shopt -u nullglob
 }
+PROMPT_DIR_DEPTH=2
 
 BRANCH_ICONS=("𖣂" "𖦥" "⎇")
 RIGHT_SEPARATOR=$'\uE0B0'
@@ -119,7 +120,7 @@ timer_color() {
 
 # short_pwd construct the PWD dir, but shortened
 short_pwd() {
-    local depth=${1:-3}
+    local depth=${1:-$PROMPT_DIR_DEPTH}
     local path
 
     # Replace $HOME with ~
@@ -135,27 +136,28 @@ short_pwd() {
 
     local tilde=0
     [[ ${parts[0]} == "~" ]] && tilde=1
+
     if (( count <= depth + tilde )); then
         printf "%s" "$path"
         return
     fi
 
-    # If path is longer than depth, show ellipsis; include number if >1
-    local skipped=$(( count - depth - tilde ))
-    local ellipsis="..."
-    (( skipped > 1 )) && ellipsis="...($skipped)"
-
-    local last_segments=""
-    local start=$((count - depth))
-    for ((i=start; i<count; i++)); do
-        last_segments+="${parts[i]}"
-        (( i < count - 1 )) && last_segments+="/"
+    local start=$(( count - depth ))
+    local result=""
+    # Shorten skipped directories to first letter
+    for (( i=tilde; i<start; i++ )); do
+        result+="${parts[i]:0:1}/"
     done
 
+    # Slice last segment and join with /
+    local last_segments
+    printf -v last_segments "%s/" "${parts[@]:start:depth}"
+    last_segments=${last_segments%/}
+
     if (( tilde )); then
-        printf "~/%s/%s" "$ellipsis" "$last_segments"
+        printf "~/%s%s" "$result" "$last_segments"
     else
-        printf "%s/%s" "$ellipsis" "$last_segments"
+        printf "%s%s" "$result" "$last_segments"
     fi
 }
 
@@ -245,7 +247,7 @@ build_prompt() {
     local status_str
     local user_str=" $USER "
     local dir_str
-    dir_str=" $(short_pwd 3) "
+    dir_str=" $(short_pwd "$PROMPT_DIR_DEPTH") "
     local branch branch_str
     branch="$(git_branch)"
     local left_offset=2
