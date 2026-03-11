@@ -74,7 +74,23 @@ git_branch() {
         fi
     fi
 
-    printf "%s" "$__GIT_CACHE_BRANCH$__GIT_CACHE_DIRTY"
+    # Ahead / behind
+    local ahead="" behind=""
+
+    counts=$(git rev-list --left-right --count HEAD...@{upstream} 2>/dev/null)
+
+    if [[ -n "$counts" ]]; then
+        read -r behind ahead <<< "$counts"
+
+        (( ahead > 0 )) && ahead=" ⇧$ahead" || ahead=""
+        (( behind > 0 )) && behind=" ⇩$behind" || behind=""
+    fi
+
+    printf "%s%s%s%s" \
+    "$__GIT_CACHE_BRANCH" \
+    "$__GIT_CACHE_DIRTY" \
+    "$ahead" \
+    "$behind"
 }
 
 # Aliases
