@@ -80,10 +80,10 @@ git_branch() {
     counts=$(git rev-list --left-right --count HEAD...@{upstream} 2>/dev/null)
 
     if [[ -n "$counts" ]]; then
-        read -r behind ahead <<< "$counts"
+        read -r ahead behind <<< "$counts"
 
-        (( ahead > 0 )) && ahead=" ⇧$ahead" || ahead=""
-        (( behind > 0 )) && behind=" ⇩$behind" || behind=""
+        (( ahead > 0 )) && ahead=" ↑$ahead" || ahead=""
+        (( behind > 0 )) && behind=" ↓$behind" || behind=""
     fi
 
     printf "%s%s%s%s" \
