@@ -3,17 +3,7 @@
 # Runtime states
 __TIMER_ACTIVE=0
 __LAST_CMDNUM=0
-__LAST_ERROR_SOUND=0
-__ERROR_SOUND_ENABLED=0
 
-ERROR_SOUND_DIR="$HOME/music/effects/error"
-ERROR_SOUND_COOLDOWN=5 # seconds
-ERROR_SOUNDS=()
-[[ -d "$ERROR_SOUND_DIR" ]] && {
-    shopt -s nullglob
-    ERROR_SOUNDS=("$ERROR_SOUND_DIR"/*.ogg)
-    shopt -u nullglob
-}
 PROMPT_DIR_DEPTH=2
 
 BRANCH_ICONS=("𖣂" "𖦥" "⎇")
@@ -171,24 +161,6 @@ append_prompt_command() {
     fi
 }
 
-# error_sound_on enables the error sound
-# error_sound_off disables the error sound
-error_sound_on() {
-    __ERROR_SOUND_ENABLED=1
-    echo "Error sound enabled🔊"
-}
-error_sound_off() {
-    __ERROR_SOUND_ENABLED=0
-    echo "Error sound disabled🔇"
-}
-
-# toggle_error_sound toggles the error sound on or off
-toggle_error_sound() {
-    (( __ERROR_SOUND_ENABLED )) \
-        && error_sound_off \
-        || error_sound_on
-}
-
 # detect_empty_command detects if current command is
 # empty (or the same) as the previous command (HISTCMD doesn't increment)
 detect_empty_command() {
@@ -198,30 +170,6 @@ detect_empty_command() {
         __CMD_WAS_EMPTY=0
         __LAST_CMDNUM=$HISTCMD
     fi
-}
-
-# play_error_sound plays the error sound if enabled and cooldown has passed
-play_error_sound() {
-    (( !__ERROR_SOUND_ENABLED )) && return
-    (( ${#ERROR_SOUNDS[@]} == 0 )) && return
-
-    local now
-
-    if (( USE_EPOCHREALTIME )); then
-        now=${EPOCHREALTIME%.*}
-    else
-        printf -v now '%(%s)T' -1
-    fi
-
-    # Check sound cooldown
-    (( now - __LAST_ERROR_SOUND < ERROR_SOUND_COOLDOWN )) && return
-    __LAST_ERROR_SOUND=$now
-
-    command -v mpv &>/dev/null || return
-    local sound=${ERROR_SOUNDS[RANDOM % ${#ERROR_SOUNDS[@]}]}
-
-    mpv --no-terminal --really-quiet --af=volume=.75 "$sound" &>/dev/null &
-    disown
 }
 
 # build_prompt assembles the PS1
