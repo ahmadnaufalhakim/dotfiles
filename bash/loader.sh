@@ -13,3 +13,6 @@ if [ -d "$BASH_MODULE_DIR" ]; then
         [ -r "$file" ] && source "$file"
     done
 fi
+
+# Start timer before commands run
+trap 'start_timer' DEBUG

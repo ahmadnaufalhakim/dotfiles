@@ -339,6 +339,3 @@ build_prompt() {
 # Register prompt hooks
 append_prompt_command build_prompt
 append_prompt_command set_goprivate
-
-# Start timer before commands run
-trap 'start_timer' DEBUG
