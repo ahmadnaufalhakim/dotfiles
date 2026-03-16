@@ -9,6 +9,6 @@ prompt_barrier() {
 
     printf -v barrier '%*s' "${barrier_len}" ''
     barrier=${barrier// /$BARRIER}
-    
+
     printf "%s" "${barrier}"
 }
