@@ -36,7 +36,6 @@ detect_empty_command() {
 # build_prompt assembles the PS1
 build_prompt() {
     local exit_code=$?
-    # local duration_ms
 
     stop_timer
     detect_empty_command
