@@ -3,6 +3,7 @@
 prompt_segment_duration() {
     local duration_ms="$1"
     local text=""
+    SEGMENT_WIDTH=0
 
     if (( duration_ms > 400 )); then
         local formatted
