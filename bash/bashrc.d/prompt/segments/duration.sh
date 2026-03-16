@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 prompt_segment_duration() {
-    local duration_ms=$1
+    local duration_ms="$1"
     local text=""
 
     if (( duration_ms > 400 )); then
