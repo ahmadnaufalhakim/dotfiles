@@ -44,6 +44,8 @@ build_prompt() {
     # before, and the command failed
     if (( __CMD_WAS_EMPTY == 0 && exit_code != 0 && exit_code != 130 )); then
         play_error_sound
+    elif (( __CMD_WAS_EMPTY )); then
+        reset_timer
     fi
 
     # Segment temp vars
@@ -67,7 +69,7 @@ build_prompt() {
     local right_section=""
     local right_width=0
     # Build right side of the prompt
-    prompt_segment_duration "${duration_ms}"
+    prompt_segment_duration
     prompt_add_right
     prompt_segment_date
     prompt_add_right

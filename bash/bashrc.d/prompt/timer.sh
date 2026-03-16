@@ -44,12 +44,13 @@ start_timer() {
 
 # stop_timer stops timer after each command
 stop_timer() {
-    if (( !__TIMER_ACTIVE )); then
-        duration_ms=0
-        return
-    fi
+    (( __TIMER_ACTIVE )) || return
 
     __timer_off
     __TIMER_ACTIVE=0
-    duration_ms=$__TIMER_DURATION_MS
+}
+
+# reset_timer resets the __TIMER_DURATION_MS value back to 0
+reset_timer() {
+    __TIMER_DURATION_MS=0
 }
