@@ -47,25 +47,6 @@ build_prompt() {
         play_error_sound
     fi
 
-    # Right section variables
-    local date_str="\D{%Y-%m-%d %H:%M:%S}"
-    local duration_str=""
-    if (( duration_ms > 400 )); then
-        local formatted
-        formatted=$(format_duration "$duration_ms")
-        duration_str=" ${formatted} "
-
-        # Generate dynamic timer background color
-        BG_TIMER=$(timer_color "$duration_ms" bg)
-
-        # Choose readable foreground
-        if (( duration_ms <= 30000 )); then
-            FG_TIMER="${FG_BLACK}"
-        else
-            FG_TIMER="${FG_WHITE}"
-        fi
-    fi
-
     # Segment temp vars
     SEGMENT_TEXT=""
     SEGMENT_WIDTH=0
@@ -73,9 +54,8 @@ build_prompt() {
     # Left section state
     local left_section=""
     local left_width=0
-
     # Build left side of the prompt
-    prompt_segment_status "$exit_code"
+    prompt_segment_status "${exit_code}"
     prompt_add_left
     prompt_segment_user
     prompt_add_left
@@ -84,28 +64,17 @@ build_prompt() {
     prompt_segment_branch
     prompt_add_left
 
-    # Right section prompt string
+    # Right section state
     local right_section=""
-    local right_offset=2
-    ## Command duration
-    if [[ -n "$duration_str" ]]; then
-        right_section+="${BG_DEFAULT}$(timer_color "$duration_ms" fg)${LEFT_SEPARATOR}"
-        right_section+="${BOLD}${BG_TIMER}${FG_TIMER}${duration_str}"
-        right_section+="${BG_TIMER}${FG_KK}${LEFT_SEPARATOR}"
-        ((right_offset++))
-    else
-        right_section+="${BG_DEFAULT}${FG_KK}${LEFT_SEPARATOR}"
-    fi
-    ## Date
-    right_section+="${BOLD}${BG_KK}${FG_WHITE} ${date_str} "
-    right_section+="${INVERT}${FG_KK}${BG_DEFAULT}${LEFT_SEPARATOR}"
-    ((right_offset++))
+    local right_width=0
+    # Build right side of the prompt
+    prompt_segment_duration "${duration_ms}"
+    prompt_add_right
+    prompt_segment_date
+    prompt_add_right
 
-    # Right section alignment
-    local right_length=$(( ${#duration_str} + ${#date_str} ))
-    local right_pos=$(( COLUMNS - right_length - right_offset ))
-
-    local barrier_len=$(( right_pos - ( left_width + 1 ) ))
+    # Barrier alignment
+    local barrier_len=$(( COLUMNS - ( right_width + 1 ) - ( left_width + 1 ) ))
     if (( barrier_len < 0 )); then barrier_len=0; fi
     printf -v barrier '%*s' "$barrier_len" ''
     barrier=${barrier// /$BARRIER}
