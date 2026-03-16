@@ -36,7 +36,7 @@ detect_empty_command() {
 # build_prompt assembles the PS1
 build_prompt() {
     local exit_code=$?
-    local duration_ms
+    # local duration_ms
 
     stop_timer
     detect_empty_command
@@ -73,11 +73,8 @@ build_prompt() {
     prompt_segment_date
     prompt_add_right
 
-    # Barrier alignment
-    local barrier_len=$(( COLUMNS - ( right_width + 1 ) - ( left_width + 1 ) ))
-    if (( barrier_len < 0 )); then barrier_len=0; fi
-    printf -v barrier '%*s' "$barrier_len" ''
-    barrier=${barrier// /$BARRIER}
+    local barrier
+    barrier=$(prompt_barrier "${left_width}" "${right_width}")
 
     PS1="${left_section}${RIGHT_BARRIER}${barrier}${LEFT_BARRIER}${right_section}${RESET}\n$ "
 }
