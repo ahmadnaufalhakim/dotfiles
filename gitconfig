@@ -13,4 +13,4 @@
 	default = current
 
 [includeIf "gitdir:~/coding/work/"]
-	path = ~/.gitconfig-work
+	path = ./gitconfig-work
