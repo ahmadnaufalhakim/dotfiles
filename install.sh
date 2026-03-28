@@ -43,9 +43,9 @@ fi
 
 # --- install .gitconfig include ---
 GITCONFIG="${HOME}/.gitconfig"
-GIT_INCLUDE_LINE="[include]\n	path = ${DOTFILES_DIR}/gitconfig"
+GIT_INCLUDE_LINE="[include]\n	path = ${DOTFILES_DIR}/config/git/main"
 if [[ -f "${GITCONFIG}" ]]; then
-    if ! grep -q "path = ${DOTFILES_DIR}/gitconfig" "${GITCONFIG}"; then
+    if ! grep -q "path = ${DOTFILES_DIR}/config/git/main" "${GITCONFIG}"; then
         echo -e "\n# >>> dotfiles gitconfig include >>>" >> "${GITCONFIG}"
         echo -e "${GIT_INCLUDE_LINE}" >> "${GITCONFIG}"
         echo "# <<< dotfiles gitconfig include <<<" >> "${GITCONFIG}"
@@ -58,7 +58,7 @@ else
     cat > "${GITCONFIG}" <<EOF
 # >>> dotfiles gitconfig include >>>
 [include]
-    path = ${DOTFILES_DIR}/gitconfig
+    path = ${DOTFILES_DIR}/config/git/main
 # <<< dotfiles gitconfig include <<<
 EOF
     echo "Git config created with dotfiles include."
