@@ -9,5 +9,8 @@
 	editor = nano
 	autocrlf = input
 
+[push]
+	default = current
+
 [includeIf "gitdir:~/coding/work/"]
-	path = ~/.gitconfig-work
+	path = ./work

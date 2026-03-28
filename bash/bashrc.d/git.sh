@@ -1,98 +1,5 @@
 #!/usr/bin/env bash
 
-__GIT_CACHE_PWD=""
-__GIT_CACHE_BRANCH=""
-__GIT_CACHE_ROOT=""
-__GIT_CACHE_GITDIR=""
-__GIT_CACHE_DIRTY=""
-__GIT_CACHE_INDEX_MTIME=""
-
-# git_branch prints current git branch
-git_branch() {
-    if [[ "$PWD" != "$__GIT_CACHE_PWD" ]]; then
-        __GIT_CACHE_PWD="$PWD"
-        __GIT_CACHE_BRANCH=""
-
-        # Use cached repo root if still inside the same repo
-        if [[ -z "$__GIT_CACHE_ROOT" || "$PWD" != "$__GIT_CACHE_ROOT"* ]]; then
-            local dir="$PWD"
-            __GIT_CACHE_ROOT=""
-            __GIT_CACHE_GITDIR=""
-
-            # Walk upwards to find .git directory or worktree file
-            while [[ -n "$dir" && "$dir" != "/" ]]; do
-                if [[ -d "$dir/.git" ]]; then
-                    __GIT_CACHE_ROOT="$dir"
-                    break
-                elif [[ -f "$dir/.git" ]]; then
-                    # Worktree: read gitdir from file
-                    local worktree_gitdir
-                    read -r worktree_gitdir < "$dir/.git"
-                    worktree_gitdir=${worktree_gitdir#gitdir: }
-                    __GIT_CACHE_ROOT="$dir"
-                    __GIT_CACHE_GITDIR="$worktree_gitdir"
-                    break
-                fi
-
-                dir=${dir%/*} # walk upward
-                [[ -z "$dir" ]] && dir="/"
-            done
-        fi
-
-        # Determine actual git metadata directory
-        local gitdir="${__GIT_CACHE_GITDIR:-$__GIT_CACHE_ROOT/.git}"
-
-        # Exit if no repo found
-        [[ -r "$gitdir/HEAD" ]] || return
-
-        # Read HEAD and extract branch name or short commit hash
-        local head
-        read -r head < "$gitdir/HEAD"
-
-        [[ "$head" == ref:\ * ]] \
-            && __GIT_CACHE_BRANCH=${head#ref: refs/heads/} \
-            || __GIT_CACHE_BRANCH=${head:0:7} # detached HEAD: short commit hash
-    fi
-
-    # Dirty checking
-    local index="$gitdir/index"
-
-    if [[ -f "$index" ]]; then
-        local index_mtime
-        index_mtime=$(stat -Lc %Y "$index" 2>/dev/null)
-
-        if [[ "$index_mtime" != "$__GIT_CACHE_INDEX_MTIME" ]]; then
-            __GIT_CACHE_INDEX_MTIME="$index_mtime"
-
-            if ! git diff --quiet --ignore-submodules -- 2>/dev/null \
-            || ! git diff --cached --quiet --ignore-submodules -- 2>/dev/null
-            then
-                __GIT_CACHE_DIRTY="*"
-            else
-                __GIT_CACHE_DIRTY=""
-            fi
-        fi
-    fi
-
-    # Ahead / behind
-    local ahead="" behind=""
-
-    counts=$(git rev-list --left-right --count HEAD...@{upstream} 2>/dev/null)
-
-    if [[ -n "$counts" ]]; then
-        read -r ahead behind <<< "$counts"
-
-        (( ahead > 0 )) && ahead=" ↑$ahead" || ahead=""
-        (( behind > 0 )) && behind=" ↓$behind" || behind=""
-    fi
-
-    printf "%s%s%s%s" \
-    "$__GIT_CACHE_BRANCH" \
-    "$__GIT_CACHE_DIRTY" \
-    "$ahead" \
-    "$behind"
-}
-
 # Aliases
 alias g="git"
 alias gb="git branch"
@@ -109,6 +16,7 @@ alias glos="git log --graph --pretty='%n%C(bold #eb0000)%h%C(reset)%C(auto)%d%C(
 alias gm="git merge"
 alias gpl="git pull origin"
 alias gpsh="git push origin"
+alias gpush="git push -u origin"
 alias grb="git rebase"
 alias gst="git stash"
 alias gs="git status"
@@ -129,8 +37,9 @@ declare -A git_aliases=(
     [glo]=_git_log
     [glos]=_git_log
     [gm]=_git_merge
-    [gpl]=__git_complete_refs # still figuring out which completion function is appropriate for pull
+    [gpl]=__git_complete_refs # TODO: figuring out which completion function is appropriate for pull
     [gpsh]=__git_complete_refs
+    [gpush]=__git_complete_refs
     [grb]=_git_rebase
     [gst]=_git_stash
     [gs]=_git_status
