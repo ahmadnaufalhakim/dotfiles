@@ -51,6 +51,6 @@ play_error_sound() {
     command -v mpv &>/dev/null || return
     local sound=${ERROR_SOUNDS[RANDOM % ${#ERROR_SOUNDS[@]}]}
 
-    mpv --no-terminal --really-quiet --af=volume=.75 "$sound" &>/dev/null &
+    mpv --no-terminal --really-quiet --af=volume=.5 "$sound" &>/dev/null &
     disown
 }
