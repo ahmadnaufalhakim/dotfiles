@@ -1,24 +1,21 @@
 #!/usr/bin/env bash
 
 init_c() {
-    set -e
-
     mkdir -p src build
 
-    # Create main.c if it doesn't exist
     if [ ! -f src/main.c ]; then
         cat > src/main.c <<'EOF'
 #include <stdio.h>
 
-int main(int argc, char *argv[]) {
+int main(void) {
     printf("Hello, world!\n");
     return 0;
 }
 EOF
     fi
 
-    # Create Makefile
-    cat > Makefile <<'EOF'
+    if [ ! -f Makefile ]; then
+        cat > Makefile <<'EOF'
 CC = gcc
 
 CFLAGS = -Wall -Wextra -std=c11
@@ -42,6 +39,7 @@ run: dev
 clean:
 	rm -rf build
 EOF
+    fi
 
     echo "Initialized minimal C project in: $(pwd)"
 }
