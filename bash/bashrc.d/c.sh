@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 init_c() {
-    mkdir -p src build tests
+    mkdir -p src build tests include
 
     if [ ! -f src/main.c ]; then
         cat > src/main.c <<'EOF'
@@ -37,7 +37,7 @@ EOF
         cat > Makefile <<'EOF'
 CC = gcc
 
-CFLAGS = -Wall -Wextra -std=c11
+CFLAGS = -Iinclude -Wall -Wextra -std=c11
 DEVFLAGS = -fsanitize=address -g
 RELEASEFLAGS = -O2
 
