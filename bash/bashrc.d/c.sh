@@ -60,7 +60,7 @@ run: dev
 
 test:
     mkdir -p build
-    $(CC) $(CFLAGS) $(DEVFLAGS) $(SRC) $(TEST_SRC) -o $(TEST_OUT)
+    $(CC) $(CFLAGS) $(DEVFLAGS) $(TEST_SRC) -o $(TEST_OUT)
     ./$(TEST_OUT)
 
 clean:
