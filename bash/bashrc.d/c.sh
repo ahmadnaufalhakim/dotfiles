@@ -22,7 +22,7 @@ CFLAGS = -Wall -Wextra -std=c11
 DEVFLAGS = -fsanitize=address -g
 RELEASEFLAGS = -O2
 
-SRC = src/main.c
+SRC = $(wildcard src/*.c)
 OUT = build/app
 
 dev:
