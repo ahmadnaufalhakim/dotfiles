@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 init_c() {
-    mkdir -p src build
+    mkdir -p src build tests
 
     if [ ! -f src/main.c ]; then
         cat > src/main.c <<'EOF'
@@ -9,6 +9,25 @@ init_c() {
 
 int main(void) {
     printf("Hello, world!\n");
+    return 0;
+}
+EOF
+    fi
+
+    if [ ! -f tests/test_main.c ]; then
+        cat > tests/test_main.c <<'EOF'
+#include <stdio.h>
+#include <assert.h>
+
+static void test_example(void)
+{
+    assert(1 == 1);
+}
+
+int main(void)
+{
+    test_example();
+    printf("ALL TESTS PASSED\n");
     return 0;
 }
 EOF
@@ -23,7 +42,10 @@ DEVFLAGS = -fsanitize=address -g
 RELEASEFLAGS = -O2
 
 SRC = $(wildcard src/*.c)
+TEST_SRC = $(wildcard tests/*.c)
+
 OUT = build/app
+TEST_OUT = build/test
 
 dev:
 	mkdir -p build
@@ -35,6 +57,11 @@ build:
 
 run: dev
 	./$(OUT)
+
+test:
+    mkdir -p build
+    $(CC) $(CFLAGS) $(DEVFLAGS) $(SRC) $(TEST_SRC) -o $(TEST_OUT)
+    ./$(TEST_OUT)
 
 clean:
 	rm -rf build
