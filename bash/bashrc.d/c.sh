@@ -46,8 +46,6 @@ int main(void)
     printf("\n==== ALL TESTS PASSED ====\n");
     return 0;
 }
-
-}
 EOF
     fi
 
