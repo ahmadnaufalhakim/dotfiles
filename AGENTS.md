@@ -8,6 +8,8 @@ This is Ahmad Naufal Hakim's (@ahmadnaufalhakim) personal Linux dotfiles reposit
 .
 ├── AGENTS.md              # This file — project-level rules for this repo
 ├── install.sh             # Bootstrap installer (run once on a new system)
+├── scripts/
+│   └── generate-opencode-config.sh  # Generates opencode.json from template + .env
 ├── deps.txt               # Required packages
 ├── .gitignore
 ├── LICENSE                # MIT
@@ -40,7 +42,8 @@ This is Ahmad Naufal Hakim's (@ahmadnaufalhakim) personal Linux dotfiles reposit
     ├── neofetch/
     │   └── config.conf
     └── opencode/
-        └── AGENTS.md      # Source for global opencode rules (symlinked to ~/.config/opencode/AGENTS.md)
+        ├── AGENTS.md      # Source for global opencode rules (symlinked to ~/.config/opencode/AGENTS.md)
+        └── opencode.json.example  # Template for opencode.json (envsubst replaces ${OPENMODEL_API_KEY})
 ```
 
 ## Installation
@@ -53,6 +56,7 @@ Run `install.sh` — it adds three hooks:
 | `.profile` | `~/.profile` | `profile/loader.sh` → `profile/profile.d/*.sh` |
 | `.gitconfig` | `~/.gitconfig` | `[include] path = config/git/main` |
 | opencode AGENTS.md | `~/.config/opencode/AGENTS.md` | Symlink → `config/opencode/AGENTS.md` |
+| opencode config | `~/.config/opencode/opencode.json` | `scripts/generate-opencode-config.sh` (template + `.env`) |
 
 ## Key conventions when editing this repo
 
@@ -65,3 +69,4 @@ Run `install.sh` — it adds three hooks:
 - **Use `set_goprivate`** idiom for context-aware env vars (see `go.sh`).
 - **Aliases** should be simple wrappers; complex logic goes in functions.
 - **Error sounds** live in `$HOME/music/effects/error/*.ogg` — controlled by `toggle_error_sound`.
+- **Opencode JSON config** is generated from `config/opencode/opencode.json.example` + `config/.env` via `scripts/generate-opencode-config.sh`. Secrets stay in `.env` (gitignored); structure is tracked in the template.
