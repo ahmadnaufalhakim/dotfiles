@@ -63,3 +63,12 @@ else
 EOF
     echo "Git config created with dotfiles include."
 fi
+
+# --- install opencode AGENTS.md symlink ---
+OPENCODE_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
+if [ ! -d "$OPENCODE_CONFIG_DIR" ]; then
+    mkdir -p "$OPENCODE_CONFIG_DIR"
+    echo "Created opencode config directory."
+fi
+ln -sf "${DOTFILES_DIR}/config/opencode/AGENTS.md" "${OPENCODE_CONFIG_DIR}/AGENTS.md"
+echo "Opencode AGENTS.md symlinked."
