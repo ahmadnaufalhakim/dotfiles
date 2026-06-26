@@ -20,7 +20,7 @@ These rules apply to every opencode session on this machine.
 
 ### Code style
 - **Functional style** — prefer pure functions, avoid classes
-- **Bash** — make sure to enclose any variable names with curly brackets
+- **Bash** — make sure to use ${VAR} syntax for all variable references
 - **Go-style error handling** — explicit error checking, early returns
 - **TypeScript/JavaScript** — ES modules (import/export), not CommonJS (require/module.exports)
 - **C/C++** — use `-Wall -Wextra -Wpedantic` flags, C11 standard
