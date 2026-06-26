@@ -1,5 +1,6 @@
 curl
 ffmpeg
+gettext-base
 jp2a
 mpv
 neofetch
