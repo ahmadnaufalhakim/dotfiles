@@ -1,0 +1,18 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "openmodel": {
+      "name": "OpenModel",
+      "npm": "@ai-sdk/anthropic",
+      "options": {
+        "baseURL": "${OPENMODEL_BASE_URL}",
+        "apiKey": "${OPENMODEL_API_KEY}"
+      },
+      "models": {
+        "deepseek-v4-flash": {
+          "name": "DeepSeek V4 Flash"
+        }
+      }
+    }
+  }
+}
