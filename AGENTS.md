@@ -42,8 +42,12 @@ This is Ahmad Naufal Hakim's (@ahmadnaufalhakim) personal Linux dotfiles reposit
     ├── neofetch/
     │   └── config.conf
     └── opencode/
-        ├── AGENTS.md      # Source for global opencode rules (symlinked to ~/.config/opencode/AGENTS.md)
-        └── opencode.json.example  # Template for opencode.json (envsubst replaces ${OPENMODEL_API_KEY})
+        ├── AGENTS.md              # Source for global opencode rules (symlinked to ~/.config/opencode/AGENTS.md)
+        ├── opencode.json.example  # Template for opencode.json (envsubst replaces ${OPENMODEL_API_KEY})
+        └── agents/                # Custom agent definitions (synced to ~/.config/opencode/agents/)
+            ├── ask.md             # primary — read-only Q&A agent
+            ├── brainstorm.md      # primary — high-temp creative ideation
+            └── review.md          # subagent — low-temp code reviewer (@review)
 ```
 
 ## Installation
@@ -57,6 +61,7 @@ Run `install.sh` — it adds three hooks:
 | `.gitconfig` | `~/.gitconfig` | `[include] path = config/git/main` |
 | opencode AGENTS.md | `~/.config/opencode/AGENTS.md` | Symlink → `config/opencode/AGENTS.md` |
 | opencode config | `~/.config/opencode/opencode.json` | `scripts/generate-opencode-config.sh` (template + `.env`) |
+| opencode agents | `~/.config/opencode/agents/` | `scripts/generate-opencode-config.sh` (synced from `config/opencode/agents/`) |
 
 ## Key conventions when editing this repo
 
