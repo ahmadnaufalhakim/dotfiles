@@ -1,0 +1,11 @@
+# Dracula theme — purple/pink dark palette
+COLOR_ACCENT_BG="\[\e[48;2;255;85;170m\]"
+COLOR_ACCENT_FG="\[\e[38;2;255;85;170m\]"
+COLOR_USER_BG="\[\e[48;2;189;147;249m\]"
+COLOR_USER_FG="\[\e[38;2;189;147;249m\]"
+COLOR_DIR_BG="\[\e[48;2;139;140;217m\]"
+COLOR_DIR_FG="\[\e[38;2;139;140;217m\]"
+COLOR_GIT_BG="\[\e[48;2;152;156;240m\]"
+COLOR_GIT_FG="\[\e[38;2;152;156;240m\]"
+COLOR_META_BG="\[\e[48;2;68;71;138m\]"
+COLOR_META_FG="\[\e[38;2;68;71;138m\]"
