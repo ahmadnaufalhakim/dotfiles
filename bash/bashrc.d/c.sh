@@ -1,21 +1,68 @@
 #!/usr/bin/env bash
 
 init_c() {
-    mkdir -p src build tests include
+    local project_name="${1:-}"
+    local target_dir="."
 
-    if [ ! -f src/main.c ]; then
-        cat > src/main.c <<'EOF'
+    if [[ -z "$project_name" ]]; then
+        local dir_basename
+        dir_basename="$(basename "$(pwd)")"
+        read -rp "Bootstrap C project in '${dir_basename}'? (y/n) " confirm
+        [[ "$confirm" == "y" ]] || return 1
+        read -rp "Are you really sure? (y/n) " confirm
+        [[ "$confirm" == "y" ]] || return 1
+        project_name="$dir_basename"
+        target_dir="."
+    else
+        target_dir="$project_name"
+        if [[ -d "$target_dir" ]]; then
+            echo "Directory already exists: $target_dir" >&2
+            return 1
+        fi
+        mkdir -p "$target_dir"
+    fi
+
+    mkdir -p "$target_dir/src" "$target_dir/build" "$target_dir/tests" "$target_dir/include"
+
+    local header_guard
+    if [[ -n "$project_name" ]]; then
+        header_guard="${project_name^^}_H"
+    else
+        header_guard="MYPROJECT_H"
+    fi
+
+    if [ ! -f "$target_dir/src/main.c" ]; then
+        cat > "$target_dir/src/main.c" <<EOF
 #include <stdio.h>
 
 int main(void) {
-    printf("Hello, world!\n");
+    printf("Hello from ${project_name:-world}!\\n");
     return 0;
 }
 EOF
     fi
 
-    if [ ! -f tests/test_main.c ]; then
-        cat > tests/test_main.c <<'EOF'
+    if [ ! -f "$target_dir/src/lib.c" ]; then
+        cat > "$target_dir/src/lib.c" <<'EOF'
+#include "lib.h"
+
+/* Library implementation goes here */
+EOF
+    fi
+
+    if [ ! -f "$target_dir/include/lib.h" ]; then
+        cat > "$target_dir/include/lib.h" <<EOF
+#ifndef ${header_guard}
+#define ${header_guard}
+
+/* Public API for ${project_name:-myproject} */
+
+#endif /* ${header_guard} */
+EOF
+    fi
+
+    if [ ! -f "$target_dir/tests/test_main.c" ]; then
+        cat > "$target_dir/tests/test_main.c" <<'EOF'
 #include <stdio.h>
 #include <assert.h>
 
@@ -49,8 +96,8 @@ int main(void)
 EOF
     fi
 
-    if [ ! -f tests/test_example.c ]; then
-        cat > tests/test_example.c <<'EOF'
+    if [ ! -f "$target_dir/tests/test_example.c" ]; then
+        cat > "$target_dir/tests/test_example.c" <<'EOF'
 #include <assert.h>
 #include <stdio.h>
 
@@ -67,8 +114,8 @@ void run_example_tests(void) {
 EOF
     fi
 
-    if [ ! -f Makefile ]; then
-        cat > Makefile <<'EOF'
+    if [ ! -f "$target_dir/Makefile" ]; then
+        cat > "$target_dir/Makefile" <<'EOF'
 CC = gcc
 CFLAGS = \
 	-Iinclude \
@@ -117,5 +164,25 @@ clean:
 EOF
     fi
 
-    echo "Initialized minimal C project in: $(pwd)"
+    if [ ! -f "$target_dir/.gitignore" ]; then
+        cat > "$target_dir/.gitignore" <<'EOF'
+build/
+*.o
+*.obj
+*.exe
+*.out
+*.swp
+*.swo
+*~
+.DS_Store
+.vscode/
+EOF
+    fi
+
+    if [[ -n "$project_name" ]]; then
+        cd "$target_dir"
+        echo "Initialized C project: $(pwd)"
+    else
+        echo "Initialized minimal C project in: $(pwd)"
+    fi
 }
