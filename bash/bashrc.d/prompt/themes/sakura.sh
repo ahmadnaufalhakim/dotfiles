@@ -1,0 +1,11 @@
+# Sakura theme — cherry blossom pink palette
+COLOR_ACCENT_BG="\[\e[48;2;139;28;98m\]"
+COLOR_ACCENT_FG="\[\e[38;2;139;28;98m\]"
+COLOR_USER_BG="\[\e[48;2;219;112;147m\]"
+COLOR_USER_FG="\[\e[38;2;219;112;147m\]"
+COLOR_DIR_BG="\[\e[48;2;255;182;193m\]"
+COLOR_DIR_FG="\[\e[38;2;255;182;193m\]"
+COLOR_GIT_BG="\[\e[48;2;255;228;235m\]"
+COLOR_GIT_FG="\[\e[38;2;255;228;235m\]"
+COLOR_META_BG="\[\e[48;2;80;20;50m\]"
+COLOR_META_FG="\[\e[38;2;80;20;50m\]"

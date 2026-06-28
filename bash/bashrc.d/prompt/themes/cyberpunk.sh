@@ -1,0 +1,11 @@
+# Cyberpunk theme — neon cyan/purple palette
+COLOR_ACCENT_BG="\[\e[48;2;255;0;128m\]"
+COLOR_ACCENT_FG="\[\e[38;2;255;0;128m\]"
+COLOR_USER_BG="\[\e[48;2;0;255;255m\]"
+COLOR_USER_FG="\[\e[38;2;0;255;255m\]"
+COLOR_DIR_BG="\[\e[48;2;180;0;255m\]"
+COLOR_DIR_FG="\[\e[38;2;180;0;255m\]"
+COLOR_GIT_BG="\[\e[48;2;255;255;0m\]"
+COLOR_GIT_FG="\[\e[38;2;255;255;0m\]"
+COLOR_META_BG="\[\e[48;2;20;0;40m\]"
+COLOR_META_FG="\[\e[38;2;20;0;40m\]"

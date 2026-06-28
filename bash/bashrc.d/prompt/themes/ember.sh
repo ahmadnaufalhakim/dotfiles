@@ -1,0 +1,11 @@
+# Ember theme — mono red palette
+COLOR_ACCENT_BG="\[\e[48;2;139;0;0m\]"
+COLOR_ACCENT_FG="\[\e[38;2;139;0;0m\]"
+COLOR_USER_BG="\[\e[48;2;220;20;60m\]"
+COLOR_USER_FG="\[\e[38;2;220;20;60m\]"
+COLOR_DIR_BG="\[\e[48;2;240;128;128m\]"
+COLOR_DIR_FG="\[\e[38;2;240;128;128m\]"
+COLOR_GIT_BG="\[\e[48;2;255;200;200m\]"
+COLOR_GIT_FG="\[\e[38;2;255;200;200m\]"
+COLOR_META_BG="\[\e[48;2;80;0;0m\]"
+COLOR_META_FG="\[\e[38;2;80;0;0m\]"

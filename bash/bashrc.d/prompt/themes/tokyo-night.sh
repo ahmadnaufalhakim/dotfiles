@@ -1,0 +1,11 @@
+# Tokyo Night theme — dark blue/purple palette (inspired by tokyonight theme)
+COLOR_ACCENT_BG="\[\e[48;2;247;118;142m\]"
+COLOR_ACCENT_FG="\[\e[38;2;247;118;142m\]"
+COLOR_USER_BG="\[\e[48;2;122;162;247m\]"
+COLOR_USER_FG="\[\e[38;2;122;162;247m\]"
+COLOR_DIR_BG="\[\e[48;2;158;206;106m\]"
+COLOR_DIR_FG="\[\e[38;2;158;206;106m\]"
+COLOR_GIT_BG="\[\e[48;2;224;175;104m\]"
+COLOR_GIT_FG="\[\e[38;2;224;175;104m\]"
+COLOR_META_BG="\[\e[48;2;31;35;53m\]"
+COLOR_META_FG="\[\e[38;2;31;35;53m\]"

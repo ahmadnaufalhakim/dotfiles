@@ -1,0 +1,11 @@
+# Forest theme — mono green palette
+COLOR_ACCENT_BG="\[\e[48;2;0;100;0m\]"
+COLOR_ACCENT_FG="\[\e[38;2;0;100;0m\]"
+COLOR_USER_BG="\[\e[48;2;34;139;34m\]"
+COLOR_USER_FG="\[\e[38;2;34;139;34m\]"
+COLOR_DIR_BG="\[\e[48;2;144;238;144m\]"
+COLOR_DIR_FG="\[\e[38;2;144;238;144m\]"
+COLOR_GIT_BG="\[\e[48;2;204;255;204m\]"
+COLOR_GIT_FG="\[\e[38;2;204;255;204m\]"
+COLOR_META_BG="\[\e[48;2;0;50;0m\]"
+COLOR_META_FG="\[\e[38;2;0;50;0m\]"

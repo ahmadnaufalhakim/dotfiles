@@ -1,0 +1,11 @@
+# Nord theme — arctic blue/grey palette (inspired by nordtheme.com)
+COLOR_ACCENT_BG="\[\e[48;2;191;97;106m\]"
+COLOR_ACCENT_FG="\[\e[38;2;191;97;106m\]"
+COLOR_USER_BG="\[\e[48;2;94;129;172m\]"
+COLOR_USER_FG="\[\e[38;2;94;129;172m\]"
+COLOR_DIR_BG="\[\e[48;2;136;192;208m\]"
+COLOR_DIR_FG="\[\e[38;2;136;192;208m\]"
+COLOR_GIT_BG="\[\e[48;2;143;188;187m\]"
+COLOR_GIT_FG="\[\e[38;2;143;188;187m\]"
+COLOR_META_BG="\[\e[48;2;46;52;64m\]"
+COLOR_META_FG="\[\e[38;2;46;52;64m\]"

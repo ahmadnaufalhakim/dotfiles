@@ -1,0 +1,11 @@
+# Monochrome theme — pure greyscale
+COLOR_ACCENT_BG="\[\e[48;2;0;0;0m\]"
+COLOR_ACCENT_FG="\[\e[38;2;0;0;0m\]"
+COLOR_USER_BG="\[\e[48;2;80;80;80m\]"
+COLOR_USER_FG="\[\e[38;2;80;80;80m\]"
+COLOR_DIR_BG="\[\e[48;2;160;160;160m\]"
+COLOR_DIR_FG="\[\e[38;2;160;160;160m\]"
+COLOR_GIT_BG="\[\e[48;2;210;210;210m\]"
+COLOR_GIT_FG="\[\e[38;2;210;210;210m\]"
+COLOR_META_BG="\[\e[48;2;40;40;40m\]"
+COLOR_META_FG="\[\e[38;2;40;40;40m\]"

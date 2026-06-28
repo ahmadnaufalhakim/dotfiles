@@ -1,0 +1,11 @@
+# Catppuccin theme — warm pastel palette (Mocha variant, inspired by catppuccin.com)
+COLOR_ACCENT_BG="\[\e[48;2;243;139;168m\]"
+COLOR_ACCENT_FG="\[\e[38;2;243;139;168m\]"
+COLOR_USER_BG="\[\e[48;2;137;180;250m\]"
+COLOR_USER_FG="\[\e[38;2;137;180;250m\]"
+COLOR_DIR_BG="\[\e[48;2;166;227;161m\]"
+COLOR_DIR_FG="\[\e[38;2;166;227;161m\]"
+COLOR_GIT_BG="\[\e[48;2;249;226;175m\]"
+COLOR_GIT_FG="\[\e[38;2;249;226;175m\]"
+COLOR_META_BG="\[\e[48;2;69;71;90m\]"
+COLOR_META_FG="\[\e[38;2;69;71;90m\]"
