@@ -1,0 +1,11 @@
+# Ocean theme — cool blue/teal palette
+COLOR_ACCENT_BG="\[\e[48;2;0;105;148m\]"
+COLOR_ACCENT_FG="\[\e[38;2;0;105;148m\]"
+COLOR_USER_BG="\[\e[48;2;0;180;216m\]"
+COLOR_USER_FG="\[\e[38;2;0;180;216m\]"
+COLOR_DIR_BG="\[\e[48;2;144;224;239m\]"
+COLOR_DIR_FG="\[\e[38;2;144;224;239m\]"
+COLOR_GIT_BG="\[\e[48;2;202;240;248m\]"
+COLOR_GIT_FG="\[\e[38;2;202;240;248m\]"
+COLOR_META_BG="\[\e[48;2;0;50;80m\]"
+COLOR_META_FG="\[\e[38;2;0;50;80m\]"
