@@ -1,0 +1,11 @@
+# Gruvbox theme — warm retro palette
+COLOR_ACCENT_BG="\[\e[48;2;204;36;29m\]"
+COLOR_ACCENT_FG="\[\e[38;2;204;36;29m\]"
+COLOR_USER_BG="\[\e[48;2;214;93;14m\]"
+COLOR_USER_FG="\[\e[38;2;214;93;14m\]"
+COLOR_DIR_BG="\[\e[48;2;215;153;33m\]"
+COLOR_DIR_FG="\[\e[38;2;215;153;33m\]"
+COLOR_GIT_BG="\[\e[48;2;142;192;124m\]"
+COLOR_GIT_FG="\[\e[38;2;142;192;124m\]"
+COLOR_META_BG="\[\e[48;2;102;92;84m\]"
+COLOR_META_FG="\[\e[38;2;102;92;84m\]"
