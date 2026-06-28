@@ -1,0 +1,11 @@
+# Default theme — Bocchi the Rock! palette
+COLOR_ACCENT_BG="\[\e[48;2;235;0;0m\]"
+COLOR_ACCENT_FG="\[\e[38;2;235;0;0m\]"
+COLOR_USER_BG="\[\e[48;2;52;120;240m\]"
+COLOR_USER_FG="\[\e[38;2;52;120;240m\]"
+COLOR_DIR_BG="\[\e[48;2;240;196;40m\]"
+COLOR_DIR_FG="\[\e[38;2;240;196;40m\]"
+COLOR_GIT_BG="\[\e[48;2;255;95;175m\]"
+COLOR_GIT_FG="\[\e[38;2;255;95;175m\]"
+COLOR_META_BG="\[\e[48;2;128;50;82m\]"
+COLOR_META_FG="\[\e[38;2;128;50;82m\]"
