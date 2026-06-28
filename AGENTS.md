@@ -24,10 +24,11 @@ This is Ahmad Naufal Hakim's (@ahmadnaufalhakim) personal Linux dotfiles reposit
 │       ├── ssh.sh         # Auto-start ssh-agent, add github key
 │       ├── c.sh           # init_c — scaffold minimal C project
 │       └── prompt/        # Modular PS1 system
-│           ├── engine.sh  # build_prompt via PROMPT_COMMAND
-│           ├── color.sh   # ANSI color definitions
+│           ├── engine.sh  # build_prompt via PROMPT_COMMAND + prompt_theme()
+│           ├── color.sh   # ANSI color definitions + theme loader
 │           ├── timer.sh   # Command execution timer (DEBUG trap)
 │           ├── error.sh   # Error sound effect on non-zero exit
+│           ├── themes/    # Color palette themes (default, ocean, dracula, gruvbox)
 │           └── segments/  # Prompt segments (status, user, dir, git, duration, date, barrier)
 ├── profile/
 │   ├── loader.sh          # Sourced by .profile — loads all profile/profile.d/*.sh
@@ -69,6 +70,7 @@ Run `install.sh` — it adds three hooks:
 - **All profile modules go in `profile/profile.d/*.sh`** — same pattern.
 - **Config files** go in `config/<name>/` and are referenced by absolute path (no symlinks, except for opencode).
 - **Prompt segments** go in `bash/bashrc.d/prompt/segments/` and must be registered via `prompt_add_left` or `prompt_add_right`.
+- **Prompt themes** go in `bash/bashrc.d/prompt/themes/`. Switch at runtime with `prompt_theme <name>`. Theme files define 5 semantic color pairs (ACCENT, USER, DIR, GIT, META).
 - **Keep it modular** — each `.sh` file should have a single responsibility.
 - **All shell scripts use `#!/usr/bin/env bash`** shebang.
 - **Use `set_goprivate`** idiom for context-aware env vars (see `go.sh`).
