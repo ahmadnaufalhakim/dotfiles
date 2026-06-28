@@ -16,14 +16,48 @@ BARRIER="─"
 # --- Theme switcher ---
 prompt_theme() {
     local theme_name="${1:-}"
-    [[ -z "$theme_name" ]] && { echo "Usage: prompt_theme <name>"; return 1; }
+    local themes_dir
+    themes_dir="$(dirname "${BASH_SOURCE[0]}")/themes"
 
-    local theme_file
-    theme_file="$(dirname "${BASH_SOURCE[0]}")/themes/${theme_name}.sh"
+    if [[ -z "$theme_name" ]]; then
+        local names=() max_len=0 name
+        for f in "${themes_dir}/"*.sh; do
+            name="$(basename "$f" .sh)"
+            names+=("$name")
+            (( ${#name} > max_len )) && max_len=${#name}
+        done
+
+        echo "Available themes:"
+        local _r="${RESET//\\[/}"
+        _r="${_r//\\]/}"
+        for name in "${names[@]}"; do
+            source "${themes_dir}/${name}.sh"
+            printf "  %-*s  " "$max_len" "$name"
+            for c in "$COLOR_ACCENT_BG" "$COLOR_USER_BG" "$COLOR_DIR_BG" "$COLOR_GIT_BG" "$COLOR_META_BG"; do
+                local raw="${c//\\[/}"
+                raw="${raw//\\]/}"
+                printf "${raw}  ${_r}"
+            done
+            echo ""
+        done
+
+        # Re-source current theme
+        local current_theme="default"
+        [[ -f "${HOME}/.prompt_theme" ]] && current_theme=$(<"${HOME}/.prompt_theme")
+        current_theme="${current_theme#PROMPT_THEME=}"
+        if [[ -f "${themes_dir}/${current_theme}.sh" ]]; then
+            source "${themes_dir}/${current_theme}.sh"
+        else
+            source "${themes_dir}/default.sh"
+        fi
+        return 0
+    fi
+
+    local theme_file="${themes_dir}/${theme_name}.sh"
     if [[ ! -f "$theme_file" ]]; then
         echo "Theme not found: ${theme_name}" >&2
         echo "Available themes:"
-        for f in "$(dirname "${BASH_SOURCE[0]}")/themes/"*.sh; do
+        for f in "${themes_dir}/"*.sh; do
             echo "  $(basename "$f" .sh)"
         done
         return 1
