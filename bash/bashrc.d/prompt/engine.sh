@@ -5,12 +5,34 @@ __LAST_CMDNUM=0
 
 PROMPT_DIR_DEPTH=2
 
+# Powerline characters (unicode)
 BRANCH_ICONS=("𖣂" "𖦥" "⎇")
-RIGHT_SEPARATOR=$'\uE0B0'
-LEFT_SEPARATOR=$'\uE0B2'
-RIGHT_BARRIER=$'\uE0B1'
-LEFT_BARRIER=$'\uE0B3'
+RIGHT_SEPARATOR=$'\uE0B0'   #  - hard separator
+LEFT_SEPARATOR=$'\uE0B2'    #  - hard separator (reverse)
+RIGHT_BARRIER=$'\uE0B1'     #  - soft separator
+LEFT_BARRIER=$'\uE0B3'      #  - soft separator (reverse)
 BARRIER="─"
+
+# --- Theme switcher ---
+prompt_theme() {
+    local theme_name="${1:-}"
+    [[ -z "$theme_name" ]] && { echo "Usage: prompt_theme <name>"; return 1; }
+
+    local theme_file
+    theme_file="$(dirname "${BASH_SOURCE[0]}")/themes/${theme_name}.sh"
+    if [[ ! -f "$theme_file" ]]; then
+        echo "Theme not found: ${theme_name}" >&2
+        echo "Available themes:"
+        for f in "$(dirname "${BASH_SOURCE[0]}")/themes/"*.sh; do
+            echo "  $(basename "$f" .sh)"
+        done
+        return 1
+    fi
+
+    source "$theme_file"
+    echo "PROMPT_THEME=${theme_name}" > "${HOME}/.prompt_theme"
+    echo "Switched to theme: ${theme_name}"
+}
 
 # append_prompt_command safely appends a command to the current PROMPT_COMMAND
 append_prompt_command() {
@@ -36,6 +58,12 @@ detect_empty_command() {
 # build_prompt assembles the PS1
 build_prompt() {
     local exit_code=$?
+
+    # Bare-minimum fallback if theme system catastrophically failed
+    if [[ -z "${COLOR_ACCENT_BG:-}" ]]; then
+        PS1='\[\e[0m\]\u@\h \w \$ '
+        return
+    fi
 
     stop_timer
     detect_empty_command
@@ -74,12 +102,13 @@ build_prompt() {
     prompt_segment_date
     prompt_add_right
 
+    # Barrier (fill line between left and right)
     local barrier
     barrier=$(prompt_barrier "${left_width}" "${right_width}")
 
     PS1="${left_section}${RIGHT_BARRIER}${barrier}${LEFT_BARRIER}${right_section}${RESET}\n$ "
 }
 
-# Register prompt hooks
+# Registered in PROMPT_COMMAND (order matters: set_goprivate runs second)
 append_prompt_command build_prompt
 append_prompt_command set_goprivate
