@@ -9,7 +9,7 @@ BLINK="\[\e[5m\]"
 # Invert fg/bg
 INVERT="\[\e[7m\]"
 
-# Background colors
+# Background colors (standard 8 + default)
 BG_BLACK="\[\e[40m\]"
 BG_RED="\[\e[41m\]"
 BG_GREEN="\[\e[42m\]"
@@ -20,6 +20,7 @@ BG_CYAN="\[\e[46m\]"
 BG_WHITE="\[\e[47m\]"
 BG_DEFAULT="\[\e[49m\]"
 
+# Background colors (bright)
 BG_BBLACK="\[\e[100m\]"
 BG_BRED="\[\e[101m\]"
 BG_BGREEN="\[\e[102m\]"
@@ -29,7 +30,7 @@ BG_BMAGENTA="\[\e[105m\]"
 BG_BCYAN="\[\e[106m\]"
 BG_BWHITE="\[\e[107m\]"
 
-# Foreground colors
+# Foreground colors (standard 8 + default)
 FG_BLACK="\[\e[30m\]"
 FG_RED="\[\e[31m\]"
 FG_GREEN="\[\e[32m\]"
@@ -40,6 +41,7 @@ FG_CYAN="\[\e[36m\]"
 FG_WHITE="\[\e[37m\]"
 FG_DEFAULT="\[\e[39m\]"
 
+# Foreground colors (bright)
 FG_BBLACK="\[\e[90m\]"
 FG_BRED="\[\e[91m\]"
 FG_BGREEN="\[\e[92m\]"
@@ -49,20 +51,29 @@ FG_BMAGENTA="\[\e[95m\]"
 FG_BCYAN="\[\e[96m\]"
 FG_BWHITE="\[\e[97m\]"
 
-# keyword: ANSI escape codes
-# bzr in truecolor (24-bit)
-BG_KT="\[\e[48;2;235;0;0m\]"
-BG_RY="\[\e[48;2;52;120;240m\]"
-BG_NJ="\[\e[48;2;240;196;40m\]"
-BG_BC="\[\e[48;2;255;95;175m\]"
-BG_KK="\[\e[48;2;128;50;82m\]"
+# --- Theme system ---
+__PROMPT_DIR="${BASH_SOURCE[0]%/*}"
 
-FG_KT="\[\e[38;2;235;0;0m\]"
-FG_RY="\[\e[38;2;52;120;240m\]"
-FG_NJ="\[\e[38;2;240;196;40m\]"
-FG_BC="\[\e[38;2;255;95;175m\]"
-FG_KK="\[\e[38;2;128;50;82m\]"
+__load_theme() {
+    local theme_file="${__PROMPT_DIR}/themes/${1}.sh"
+    [[ -f "$theme_file" ]] && source "$theme_file" && return 0
+    return 1
+}
 
-# # Custom colors
-# BG_TIMER="\[\e[48;2;190;52;85m\]"
-# FG_TIMER="\[\e[38;2;190;52;85m\]"
+# Fallback chain: saved theme > PROMPT_THEME > default.sh > inline Bocchi > bare PS1
+__THEME_NAME="${PROMPT_THEME:-default}"
+[[ -f "${HOME}/.prompt_theme" ]] && __THEME_NAME=$(<"${HOME}/.prompt_theme")
+__THEME_NAME="${__THEME_NAME#PROMPT_THEME=}"
+
+if ! __load_theme "$__THEME_NAME"; then
+    if [[ "$__THEME_NAME" != "default" ]] && __load_theme "default"; then
+        :
+    else
+        # Inline Bocchi fallback (hardcoded default theme)
+        COLOR_ACCENT_BG="\[\e[48;2;235;0;0m\]"; COLOR_ACCENT_FG="\[\e[38;2;235;0;0m\]"
+        COLOR_USER_BG="\[\e[48;2;52;120;240m\]";   COLOR_USER_FG="\[\e[38;2;52;120;240m\]"
+        COLOR_DIR_BG="\[\e[48;2;240;196;40m\]";    COLOR_DIR_FG="\[\e[38;2;240;196;40m\]"
+        COLOR_GIT_BG="\[\e[48;2;255;95;175m\]";    COLOR_GIT_FG="\[\e[38;2;255;95;175m\]"
+        COLOR_META_BG="\[\e[48;2;128;50;82m\]";    COLOR_META_FG="\[\e[38;2;128;50;82m\]"
+    fi
+fi
