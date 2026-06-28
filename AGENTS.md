@@ -6,10 +6,11 @@ This is Ahmad Naufal Hakim's (@ahmadnaufalhakim) personal Linux dotfiles reposit
 
 ```
 .
-├── AGENTS.md              # This file — project-level rules for this repo
-├── install.sh             # Bootstrap installer (run once on a new system)
-├── scripts/
-│   └── generate-opencode-config.sh  # Generates opencode.json from template + .env
+    ├── AGENTS.md              # This file — project-level rules for this repo
+    ├── install.sh             # Bootstrap installer (run once on a new system)
+    ├── scripts/
+    │   ├── generate-opencode-config.sh  # Generates opencode.json from template + .env
+    │   └── migrate.sh         # DB migration runner/creator (used by Go projects)
 ├── deps.txt               # Required packages
 ├── .gitignore
 ├── LICENSE                # MIT
@@ -74,6 +75,7 @@ Run `install.sh` — it adds three hooks:
 - **Keep it modular** — each `.sh` file should have a single responsibility.
 - **All shell scripts use `#!/usr/bin/env bash`** shebang.
 - **Use `set_goprivate`** idiom for context-aware env vars (see `go.sh`).
+- **Use `init_go`** to scaffold Go projects interactively (CLI with/without Cobra, Web API with net/http/Chi/Gin/Echo).
 - **Aliases** should be simple wrappers; complex logic goes in functions.
 - **Error sounds** live in `$HOME/music/effects/error/*.ogg` — controlled by `toggle_error_sound`.
 - **Opencode JSON config** is generated from `config/opencode/opencode.json.example` + `config/.env` via `scripts/generate-opencode-config.sh`. Secrets stay in `.env` (gitignored); structure is tracked in the template.
