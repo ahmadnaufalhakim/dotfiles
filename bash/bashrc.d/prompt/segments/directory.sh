@@ -2,7 +2,7 @@
 
 prompt_segment_directory() {
     local text=" $(short_pwd "${PROMPT_DIR_DEPTH}") "
-    SEGMENT_TEXT="${BG_NJ}${FG_BLACK}${text}"
+    SEGMENT_TEXT="${COLOR_DIR_BG}${FG_BLACK}${text}"
     SEGMENT_WIDTH=$(( ${#text} + 1 ))
 }
 

@@ -22,12 +22,12 @@ prompt_segment_branch() {
 
     if [[ -n "${branch}" ]]; then
         text=" ${branch_icon} ${branch} "
-        SEGMENT_TEXT="${BG_BC}${FG_NJ}${RIGHT_SEPARATOR}"
-        SEGMENT_TEXT+="${BG_BC}${FG_BLACK}${text}"
-        SEGMENT_TEXT+="${BG_DEFAULT}${FG_BC}${RIGHT_SEPARATOR}${RESET}"
+        SEGMENT_TEXT="${COLOR_GIT_BG}${COLOR_DIR_FG}${RIGHT_SEPARATOR}"
+        SEGMENT_TEXT+="${COLOR_GIT_BG}${FG_BLACK}${text}"
+        SEGMENT_TEXT+="${BG_DEFAULT}${COLOR_GIT_FG}${RIGHT_SEPARATOR}${RESET}"
         SEGMENT_WIDTH=$(( ${#text} + 1 ))
     else
-        SEGMENT_TEXT="${BG_DEFAULT}${FG_NJ}${RIGHT_SEPARATOR}${RESET}"
+        SEGMENT_TEXT="${BG_DEFAULT}${COLOR_DIR_FG}${RIGHT_SEPARATOR}${RESET}"
     fi
 }
 

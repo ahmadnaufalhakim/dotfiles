@@ -2,6 +2,6 @@
 
 prompt_segment_user() {
     local text=" $USER "
-    SEGMENT_TEXT="${BG_RY}${FG_BLACK}${text}${BG_NJ}${FG_RY}${RIGHT_SEPARATOR}"
+    SEGMENT_TEXT="${COLOR_USER_BG}${FG_BLACK}${text}${COLOR_DIR_BG}${COLOR_USER_FG}${RIGHT_SEPARATOR}"
     SEGMENT_WIDTH=$(( ${#text} + 1 ))
 }

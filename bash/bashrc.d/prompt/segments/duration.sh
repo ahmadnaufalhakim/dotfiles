@@ -22,16 +22,16 @@ prompt_segment_duration() {
     if [[ -n "${text}" ]]; then
         SEGMENT_TEXT="${BG_DEFAULT}$(timer_color "${duration_ms}" fg)${LEFT_SEPARATOR}"
         SEGMENT_TEXT+="${BOLD}${BG_TIMER}${FG_TIMER}${text}"
-        SEGMENT_TEXT+="${BG_TIMER}${FG_KK}${LEFT_SEPARATOR}"
+        SEGMENT_TEXT+="${BG_TIMER}${COLOR_META_FG}${LEFT_SEPARATOR}"
         SEGMENT_WIDTH=$(( ${#text} + 1 ))
     else
-        SEGMENT_TEXT="${BG_DEFAULT}${FG_KK}${LEFT_SEPARATOR}"
+        SEGMENT_TEXT="${BG_DEFAULT}${COLOR_META_FG}${LEFT_SEPARATOR}"
     fi
 }
 
 # timer_color dynamically sets the color of
 # the timer section based on the time it takes
-# to execute a command
+# to execute a command (green -> yellow -> red gradient)
 timer_color() {
     local ms=$1
     local type=$2
