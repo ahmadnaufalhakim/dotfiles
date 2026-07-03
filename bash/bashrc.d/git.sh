@@ -8,11 +8,60 @@ alias gbd="git branch -d"
 alias gbD="git branch -D"
 alias gco="git checkout"
 alias gcb="git checkout -b"
-alias gl="git log --graph --abbrev-commit --decorate --pretty=format:'%C(bold #eb0000)%h%C(reset) %C(auto)%d%C(reset) %C(#3478f0)%s'"
-alias gld="git log --graph --pretty='%C(bold #eb0000)%H%C(reset)%C(auto)%d%C(reset)%n    %C(#3478f0)%s%n%C(#f0c428)[%ar, %ad]%n%C(bold #ff5faf)%an〈%ae〉%C(reset)%n'"
-alias glds="git log --graph --pretty='%n%C(bold #eb0000)%H%C(reset)%C(auto)%d%C(reset)%n    %C(#3478f0)%s%n%C(#f0c428)[%ar, %ad]%n%C(bold #ff5faf)%an〈%ae〉%C(reset)' --stat"
-alias glo="git log --graph --pretty='%C(bold #eb0000)%h%C(reset)%C(auto)%d%C(reset) — %C(#3478f0)%s%C(#f0c428) [%ar, %ad]%C(bold #ff5faf) %an〈%ae〉%C(reset)'"
-alias glos="git log --graph --pretty='%n%C(bold #eb0000)%h%C(reset)%C(auto)%d%C(reset) — %C(#3478f0)%s%C(#f0c428) [%ar, %ad]%C(bold #ff5faf) %an〈%ae〉%C(reset)' --stat"
+# Parse \e[38;2;R;G;Bm → #RRGGBB
+_color_hex() {
+    local raw="${1//\\[/}"
+    raw="${raw//\\]/}"
+    local re='[0-9]+;([0-9]+);([0-9]+);([0-9]+);([0-9]+)'
+    if [[ $raw =~ $re ]]; then
+        printf '#%02x%02x%02x' "${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}" "${BASH_REMATCH[4]}"
+    fi
+}
+
+gl() {
+    local hash_c="$(_color_hex "$COLOR_ACCENT_FG")"
+    local subj_c="$(_color_hex "$COLOR_USER_FG")"
+    git log --graph --abbrev-commit --decorate --color=always \
+        --pretty=format:"%C(bold ${hash_c})%h%C(reset) %C(auto)%d%C(reset) %C(${subj_c})%s"
+}
+
+gld() {
+    local hash_c="$(_color_hex "$COLOR_ACCENT_FG")"
+    local subj_c="$(_color_hex "$COLOR_USER_FG")"
+    local date_c="$(_color_hex "$COLOR_DIR_FG")"
+    local auth_c="$(_color_hex "$COLOR_GIT_FG")"
+    git log --graph --color=always \
+        --pretty=format:"%C(bold ${hash_c})%H%C(reset)%C(auto)%d%C(reset)%n    %C(${subj_c})%s%n%C(${date_c})[%ar, %ad]%n%C(bold ${auth_c})%an〈%ae〉%C(reset)%n"
+}
+
+glds() {
+    local hash_c="$(_color_hex "$COLOR_ACCENT_FG")"
+    local subj_c="$(_color_hex "$COLOR_USER_FG")"
+    local date_c="$(_color_hex "$COLOR_DIR_FG")"
+    local auth_c="$(_color_hex "$COLOR_GIT_FG")"
+    git log --graph --color=always \
+        --pretty=format:"%n%C(bold ${hash_c})%H%C(reset)%C(auto)%d%C(reset)%n    %C(${subj_c})%s%n%C(${date_c})[%ar, %ad]%n%C(bold ${auth_c})%an〈%ae〉%C(reset)" \
+        --stat
+}
+
+glo() {
+    local hash_c="$(_color_hex "$COLOR_ACCENT_FG")"
+    local subj_c="$(_color_hex "$COLOR_USER_FG")"
+    local date_c="$(_color_hex "$COLOR_DIR_FG")"
+    local auth_c="$(_color_hex "$COLOR_GIT_FG")"
+    git log --graph --color=always \
+        --pretty=format:"%C(bold ${hash_c})%h%C(reset)%C(auto)%d%C(reset) — %C(${subj_c})%s%C(${date_c}) [%ar, %ad]%C(bold ${auth_c}) %an〈%ae〉%C(reset)"
+}
+
+glos() {
+    local hash_c="$(_color_hex "$COLOR_ACCENT_FG")"
+    local subj_c="$(_color_hex "$COLOR_USER_FG")"
+    local date_c="$(_color_hex "$COLOR_DIR_FG")"
+    local auth_c="$(_color_hex "$COLOR_GIT_FG")"
+    git log --graph --color=always \
+        --pretty=format:"%n%C(bold ${hash_c})%h%C(reset)%C(auto)%d%C(reset) — %C(${subj_c})%s%C(${date_c}) [%ar, %ad]%C(bold ${auth_c}) %an〈%ae〉%C(reset)" \
+        --stat
+}
 alias gm="git merge"
 alias gpl="git pull origin"
 alias gpsh="git push origin"
