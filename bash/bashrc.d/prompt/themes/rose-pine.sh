@@ -1,0 +1,11 @@
+# Rose Pine — soft, muted pink/pine palette
+COLOR_ACCENT_BG="\[\e[48;2;235;111;146m\]"
+COLOR_ACCENT_FG="\[\e[38;2;235;111;146m\]"
+COLOR_USER_BG="\[\e[48;2;49;116;143m\]"
+COLOR_USER_FG="\[\e[38;2;49;116;143m\]"
+COLOR_DIR_BG="\[\e[48;2;246;193;119m\]"
+COLOR_DIR_FG="\[\e[38;2;246;193;119m\]"
+COLOR_GIT_BG="\[\e[48;2;196;167;231m\]"
+COLOR_GIT_FG="\[\e[38;2;196;167;231m\]"
+COLOR_META_BG="\[\e[48;2;110;106;134m\]"
+COLOR_META_FG="\[\e[38;2;110;106;134m\]"

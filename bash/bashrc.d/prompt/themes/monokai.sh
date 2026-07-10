@@ -1,0 +1,11 @@
+# Monokai — high-contrast classic (Sublime Text inspired)
+COLOR_ACCENT_BG="\[\e[48;2;253;151;31m\]"
+COLOR_ACCENT_FG="\[\e[38;2;253;151;31m\]"
+COLOR_USER_BG="\[\e[48;2;102;217;239m\]"
+COLOR_USER_FG="\[\e[38;2;102;217;239m\]"
+COLOR_DIR_BG="\[\e[48;2;230;219;116m\]"
+COLOR_DIR_FG="\[\e[38;2;230;219;116m\]"
+COLOR_GIT_BG="\[\e[48;2;249;38;114m\]"
+COLOR_GIT_FG="\[\e[38;2;249;38;114m\]"
+COLOR_META_BG="\[\e[48;2;117;113;94m\]"
+COLOR_META_FG="\[\e[38;2;117;113;94m\]"

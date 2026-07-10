@@ -1,0 +1,11 @@
+# Horizon — vibrant dark with neon accents
+COLOR_ACCENT_BG="\[\e[48;2;233;86;120m\]"
+COLOR_ACCENT_FG="\[\e[38;2;233;86;120m\]"
+COLOR_USER_BG="\[\e[48;2;37;178;188m\]"
+COLOR_USER_FG="\[\e[38;2;37;178;188m\]"
+COLOR_DIR_BG="\[\e[48;2;250;190;105m\]"
+COLOR_DIR_FG="\[\e[38;2;250;190;105m\]"
+COLOR_GIT_BG="\[\e[48;2;238;100;172m\]"
+COLOR_GIT_FG="\[\e[38;2;238;100;172m\]"
+COLOR_META_BG="\[\e[48;2;35;37;48m\]"
+COLOR_META_FG="\[\e[38;2;35;37;48m\]"

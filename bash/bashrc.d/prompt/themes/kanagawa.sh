@@ -1,0 +1,11 @@
+# Kanagawa — Japanese wave/uikiyo-e inspired
+COLOR_ACCENT_BG="\[\e[48;2;195;64;67m\]"
+COLOR_ACCENT_FG="\[\e[38;2;195;64;67m\]"
+COLOR_USER_BG="\[\e[48;2;122;168;159m\]"
+COLOR_USER_FG="\[\e[38;2;122;168;159m\]"
+COLOR_DIR_BG="\[\e[48;2;220;163;122m\]"
+COLOR_DIR_FG="\[\e[38;2;220;163;122m\]"
+COLOR_GIT_BG="\[\e[48;2;149;127;184m\]"
+COLOR_GIT_FG="\[\e[38;2;149;127;184m\]"
+COLOR_META_BG="\[\e[48;2;84;83;94m\]"
+COLOR_META_FG="\[\e[38;2;84;83;94m\]"
