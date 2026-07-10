@@ -38,6 +38,7 @@ _dotfiles_tip_random() {
     local idx=$(( RANDOM % ${#_DOTFILES_TIPS[@]} ))
     local tip="${_DOTFILES_TIPS[$idx]}"
     local desc="${tip#*|}"
+    echo ""
     echo "${desc}"
 }
 
