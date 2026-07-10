@@ -75,3 +75,23 @@ echo "Opencode AGENTS.md symlinked."
 
 # --- generate opencode.json config from template + .env ---
 "${DOTFILES_DIR}/scripts/generate-opencode-config.sh"
+
+# --- install/uninstall MOTD dotfiles tip hook ---
+MOTD_DIR="/etc/update-motd.d"
+MOTD_LINK="${MOTD_DIR}/99-dotfiles-tips"
+
+if [[ "${1:-}" == "--uninstall" ]]; then
+    if [ -L "${MOTD_LINK}" ]; then
+        sudo rm "${MOTD_LINK}"
+        echo "MOTD dotfiles hook removed."
+    else
+        echo "MOTD dotfiles hook not present."
+    fi
+else
+    if [ -d "${MOTD_DIR}" ]; then
+        sudo ln -sf "${DOTFILES_DIR}/scripts/dotfiles-motd.sh" "${MOTD_LINK}"
+        echo "MOTD dotfiles hook symlinked."
+    else
+        echo "MOTD directory (${MOTD_DIR}) not found — skipping hook."
+    fi
+fi

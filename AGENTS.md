@@ -9,8 +9,9 @@ This is Ahmad Naufal Hakim's (@ahmadnaufalhakim) personal Linux dotfiles reposit
     ├── AGENTS.md              # This file — project-level rules for this repo
     ├── install.sh             # Bootstrap installer (run once on a new system)
     ├── scripts/
-    │   ├── generate-opencode-config.sh  # Generates opencode.json from template + .env
-    │   └── migrate.sh         # DB migration runner/creator (used by Go projects)
+│   ├── generate-opencode-config.sh  # Generates opencode.json from template + .env
+│   ├── migrate.sh         # DB migration runner/creator (used by Go projects)
+│   └── dotfiles-motd.sh   # MOTD hook entrypoint (symlinked to /etc/update-motd.d/)
 ├── deps.txt               # Required packages
 ├── .gitignore
 ├── LICENSE                # MIT
@@ -24,6 +25,7 @@ This is Ahmad Naufal Hakim's (@ahmadnaufalhakim) personal Linux dotfiles reposit
 │       ├── media.sh       # compress_audio_to_ogg
 │       ├── ssh.sh         # Auto-start ssh-agent, add github key
 │       ├── c.sh           # init_c — scaffold minimal C project
+│       ├── tips.sh        # dotfiles-tips (feature listing) + --motd mode
 │       └── prompt/        # Modular PS1 system
 │           ├── engine.sh  # build_prompt via PROMPT_COMMAND + prompt_theme()
 │           ├── color.sh   # ANSI color definitions + theme loader
@@ -64,6 +66,7 @@ Run `install.sh` — it adds three hooks:
 | opencode AGENTS.md | `~/.config/opencode/AGENTS.md` | Symlink → `config/opencode/AGENTS.md` |
 | opencode config | `~/.config/opencode/opencode.json` | `scripts/generate-opencode-config.sh` (template + `.env`) |
 | opencode agents | `~/.config/opencode/agents/` | `scripts/generate-opencode-config.sh` (synced from `config/opencode/agents/`) |
+| MOTD hook | `/etc/update-motd.d/99-dotfiles-tips` | Symlink → `scripts/dotfiles-motd.sh` |
 
 ## Key conventions when editing this repo
 
