@@ -7,5 +7,5 @@ alias ..3="cd ../../.."
 alias ..4="cd ../../../.."
 
 # Apt
-alias update="sudo apt update"
-alias upgrade="sudo apt upgrade"
+alias upd8="sudo apt update"
+alias upgr8="sudo apt upgrade"
