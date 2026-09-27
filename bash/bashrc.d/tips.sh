@@ -40,6 +40,7 @@ _dotfiles_tip_random() {
     local desc="${tip#*|}"
     echo ""
     echo "${desc}"
+    echo "Run dotfiles-tips to show all available commands within the dotfiles!"
 }
 
 _dotfiles_print_all() {
